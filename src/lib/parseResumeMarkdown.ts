@@ -27,57 +27,107 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
   
   const workText = workSection[1];
   
-  // Split by company entries - look for **Company Name** followed by job titles
-  const companyMatches = workText.match(/\*\*([^*]+)\*\*[\s\S]*?(?=\*\*[^*]+\*\*(?!\s*_)|$)/g);
+  // Split by company entries - look for **Company Name** pattern at start of line
+  const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*$)/gm).filter(block => block.trim());
   
-  if (companyMatches) {
-    for (const companyEntry of companyMatches) {
-      const employer = companyEntry.match(/\*\*([^*]+)\*\*/)?.[1]?.trim();
-      if (!employer) continue;
+  for (const companyBlock of companyBlocks) {
+    const lines = companyBlock.trim().split('\n');
+    
+    // Extract company name from first line
+    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*$/);
+    if (!companyMatch) continue;
+    const employer = companyMatch[1].trim();
+    
+    // Find all positions within this company
+    let currentPosition: any = null;
+    let bulletPoints: string[] = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
       
-      // Find all positions within this company
-      const positionMatches = companyEntry.match(/_\*\*([^*]+)\*\*_\s*\n\*([^*]+)\*[\s\S]*?(?=_\*\*|$)/g);
-      
-      if (positionMatches) {
-        for (const position of positionMatches) {
-          const titleMatch = position.match(/_\*\*([^*]+)\*\*_/);
-          const dateLocationMatch = position.match(/\*([^*]+)\*/);
-          
-          if (!titleMatch || !dateLocationMatch) continue;
-          
-          const title = titleMatch[1].trim();
-          const dateLocationStr = dateLocationMatch[1].trim();
-          
-          // Split timeframe and location
-          const parts = dateLocationStr.split('|').map(p => p.trim());
-          const timeframe = parts[0] || '';
-          const location = parts[1] || '';
-          
-          // Extract bullet points
-          const bulletMatches = position.match(/^- (.+)$/gm);
-          const achievements: string[] = bulletMatches ? bulletMatches.map(bullet => parseMarkdownText(bullet.substring(2).trim())) : [];
+      // Check if this is a position title line
+      if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
+        // Save previous position if exists
+        if (currentPosition && bulletPoints.length > 0) {
+          currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
           
           // Create summary from first achievement
           let summary = '';
-          if (achievements.length > 0) {
-            const rawSummary = achievements[0].replace(/<[^>]+>/g, ''); // Strip HTML for length check
+          if (currentPosition.achievements.length > 0) {
+            const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
             summary = rawSummary.length > 150 
               ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-              : achievements[0]; // Use the formatted version
+              : currentPosition.achievements[0];
           } else {
-            summary = `${title} role at ${employer} focused on advanced technology solutions.`;
+            summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
           }
+          currentPosition.summary = summary;
           
-          experience.push({
+          experience.push(currentPosition);
+        }
+        
+        // Start new position
+        const titleMatch = line.match(/^_\*\*([^*]+)\*\*_$/);
+        if (titleMatch) {
+          currentPosition = {
             employer,
-            title,
-            timeframe,
-            location,
-            summary,
-            achievements
-          });
+            title: titleMatch[1].trim(),
+            timeframe: '',
+            location: '',
+            summary: '',
+            achievements: []
+          };
+          bulletPoints = [];
         }
       }
+      // Check if this is a date/location line
+      else if (line.match(/^\*([^*]+)\*$/)) {
+        if (currentPosition) {
+          const dateLocationMatch = line.match(/^\*([^*]+)\*$/);
+          if (dateLocationMatch) {
+            const dateLocationStr = dateLocationMatch[1].trim();
+            const parts = dateLocationStr.split('|').map(p => p.trim());
+            currentPosition.timeframe = parts[0] || '';
+            currentPosition.location = parts[1] || '';
+          }
+        }
+      }
+      // Check if this is a bullet point
+      else if (line.startsWith('- ')) {
+        let bulletText = line.substring(2).trim();
+        
+        // Handle multi-line bullet points
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() && 
+               !lines[j].trim().startsWith('- ') && 
+               !lines[j].trim().match(/^_\*\*([^*]+)\*\*_$/) &&
+               !lines[j].trim().match(/^\*([^*]+)\*$/)) {
+          bulletText += ' ' + lines[j].trim();
+          j++;
+        }
+        i = j - 1; // Skip processed lines
+        
+        bulletPoints.push(bulletText);
+      }
+    }
+    
+    // Don't forget the last position
+    if (currentPosition && bulletPoints.length > 0) {
+      currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
+      
+      // Create summary from first achievement
+      let summary = '';
+      if (currentPosition.achievements.length > 0) {
+        const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
+        summary = rawSummary.length > 150 
+          ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
+          : currentPosition.achievements[0];
+      } else {
+        summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
+      }
+      currentPosition.summary = summary;
+      
+      experience.push(currentPosition);
     }
   }
   
