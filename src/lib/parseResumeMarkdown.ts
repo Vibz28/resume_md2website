@@ -51,17 +51,17 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
         if (currentPosition && bulletPoints.length > 0) {
           currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
           
-          // Create summary from first achievement
-          let summary = '';
-          if (currentPosition.achievements.length > 0) {
-            const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
-            summary = rawSummary.length > 150 
-              ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-              : currentPosition.achievements[0];
-          } else {
-            summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
+          // Use dedicated summary if available, otherwise create from first achievement
+          if (!currentPosition.summary) {
+            if (currentPosition.achievements.length > 0) {
+              const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
+              currentPosition.summary = rawSummary.length > 150 
+                ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
+                : currentPosition.achievements[0];
+            } else {
+              currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
+            }
           }
-          currentPosition.summary = summary;
           
           experience.push(currentPosition);
         }
@@ -92,6 +92,15 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
         }
       }
+      // Check if this is a summary line
+      else if (line.match(/^\*\*Summary:\*\*\s*(.+)$/)) {
+        if (currentPosition) {
+          const summaryMatch = line.match(/^\*\*Summary:\*\*\s*(.+)$/);
+          if (summaryMatch) {
+            currentPosition.summary = parseMarkdownText(summaryMatch[1].trim());
+          }
+        }
+      }
       // Check if this is a bullet point
       else if (line.startsWith('- ')) {
         let bulletText = line.substring(2).trim();
@@ -115,17 +124,17 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
     if (currentPosition && bulletPoints.length > 0) {
       currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
       
-      // Create summary from first achievement
-      let summary = '';
-      if (currentPosition.achievements.length > 0) {
-        const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
-        summary = rawSummary.length > 150 
-          ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-          : currentPosition.achievements[0];
-      } else {
-        summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
+      // Use dedicated summary if available, otherwise create from first achievement
+      if (!currentPosition.summary) {
+        if (currentPosition.achievements.length > 0) {
+          const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
+          currentPosition.summary = rawSummary.length > 150 
+            ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
+            : currentPosition.achievements[0];
+        } else {
+          currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
+        }
       }
-      currentPosition.summary = summary;
       
       experience.push(currentPosition);
     }
