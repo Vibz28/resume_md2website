@@ -1,50 +1,59 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# resume_md2website Constitution
+<!-- Minimal, practical rules for a static website project. -->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Static-Only Delivery
+- No server-side runtime or databases. Deliver HTML, CSS, and client-side JS from static hosting/CDN.
+- Avoid third-party runtime dependencies and trackers by default; any external script must be justified.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Zero-Build by Default
+- Prefer plain HTML/CSS/ES modules with no build step. If a build is introduced, it must:
+	- Produce static assets to `dist/` (or `docs/` if using GitHub Pages).
+	- Be reproducible with a single command and ≤ 2 direct dependencies, pinned.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Accessibility & Semantics First
+- Use semantic landmarks (header, nav, main, footer), labels, and alt text; keyboard navigation must work.
+- Maintain visible focus styles and color contrast ≥ 4.5:1; avoid ARIA unless necessary.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Performance Budget
+- Targets (mobile): Lighthouse Performance ≥ 90; LCP < 2.5s; CLS < 0.1.
+- Total JS ≤ 50 KiB gzipped; CSS ≤ 50 KiB gzipped. Optimize and lazy-load images.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Simplicity & Maintainability
+- Prefer system fonts and no client-side routing framework. Keep URLs stable; minimize global state.
+- Keep content readable without JavaScript; progressive enhancement only.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Stack and Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- Tech stack: HTML5, CSS3, and vanilla JS (ES6+). Small helper libraries allowed if ≤ 10 KiB each and justified.
+- Project layout (recommended):
+	- `src/index.html`, `src/styles.css`, `src/script.js`, `src/assets/`
+	- Output: `dist/` (or `docs/` for GitHub Pages). Single entry `index.html` at the output root.
+- Meta & SEO: Provide `<title>`, meta description, viewport, favicon, and Open Graph tags (title/description/image). `robots.txt` and `sitemap.xml` are optional.
+- Images: Use modern formats (AVIF/WebP) with fallbacks; set width/height; apply `loading="lazy"` and `decoding="async"`.
+- Fonts: Use system fonts by default; if loading web fonts, use `font-display: swap` and preload.
+- Security/Privacy: No analytics or third-party scripts by default. If added, must be privacy-friendly (no PII) and documented.
+- Hosting: Static hosting only. Default: GitHub Pages (serve from `docs/`), or any equivalent static host (Netlify/Vercel) serving the build output folder.
+- Caching: If hashed filenames are available, set long cache for assets; otherwise keep assets small and immutable.
+- Browser support: Evergreen browsers; graceful degradation for older ones.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow and Quality Gates
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Authoring: Content changes can commit directly to `main`. Structural/tooling changes require a PR.
+- Required checks before publish/merge:
+	1) Page loads without console errors.
+	2) Quick accessibility pass (keyboard only; labels; focus visible; alt text present).
+	3) Performance spot-check (Lighthouse or PageSpeed): Perf ≥ 90 on mobile for the home page.
+	4) HTML validity (W3C validator) for `index.html` and any new pages.
+- Deploy: Publish the static output folder (`docs/` or `dist/`) to hosting. For GitHub Pages, ensure `index.html` exists at the selected publishing root.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+<!-- Constitution supersedes preferences. Keep it short and enforceable. -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes other practices for this project. Deviations require an issue titled "Deviation: <summary>" and explicit approval.
+- Amendments require a PR updating this file with rationale and any migration notes. Bump the version and update dates below.
+- Reviews should verify compliance with principles and quality gates.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-09-14 | **Last Amended**: 2025-09-14
+<!-- Keep versioning MAJOR.MINOR.PATCH for this document only. -->
