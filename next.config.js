@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
+const isExport = process.env.NEXT_EXPORT === 'true';
+
 const nextConfig = {
-  output: 'export',
+  output: isExport ? 'export' : undefined,
   trailingSlash: true,
-  basePath: '/resume_md2website',
-  assetPrefix: '/resume_md2website',
+  basePath: (isProd || isExport) ? '/resume_md2website' : '',
+  assetPrefix: (isProd || isExport) ? '/resume_md2website' : '',
   images: {
     unoptimized: true
   }

@@ -27,8 +27,8 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
   
   const workText = workSection[1];
   
-  // Split by company entries - look for **Company Name** pattern at start of line
-  const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*)/gm).filter(block => block.trim());
+  // Split by company entries - look for **Company Name** pattern (but not Summary:)
+  const companyBlocks = workText.split(/(?=^\*\*(?!Summary:)[^*]+\*\*\s*)/gm).filter(block => block.trim());
   
   for (const companyBlock of companyBlocks) {
     const lines = companyBlock.trim().split('\n');
