@@ -48,7 +48,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
       // Check if this is a position title line
       if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
         // Save previous position if exists
-        if (currentPosition && bulletPoints.length > 0) {
+        if (currentPosition) {
           currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
           
           // Use dedicated summary if available, otherwise create from first achievement
@@ -64,6 +64,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
           
           experience.push(currentPosition);
+          bulletPoints = [];
         }
         
         // Start new position
@@ -121,7 +122,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
     }
     
     // Don't forget the last position
-    if (currentPosition && bulletPoints.length > 0) {
+    if (currentPosition) {
       currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
       
       // Use dedicated summary if available, otherwise create from first achievement
