@@ -82,3 +82,8 @@ temp/
 
 # Keep docs/ folder (GitHub Pages deployment)
 !docs/
+
+# Spec Kit Files
+.specify/scripts/
+.specify/templates/
+constitution_update_checklist.md
