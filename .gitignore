@@ -83,7 +83,10 @@ temp/
 # Keep docs/ folder (GitHub Pages deployment)
 !docs/
 
-# Spec Kit Files
+# Spec-Kit files
 .specify/scripts/
 .specify/templates/
 constitution_update_checklist.md
+
+# Debug files
+debug/
