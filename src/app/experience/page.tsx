@@ -1,4 +1,5 @@
 import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
+import { MarkdownText } from '@/components/MarkdownText';
 
 export default function ExperiencePage() {
   const { experience, profile } = parseResumeMarkdown();
@@ -43,7 +44,7 @@ export default function ExperiencePage() {
 
                 {exp.summary && (
                   <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                    {exp.summary}
+                    <MarkdownText>{exp.summary}</MarkdownText>
                   </p>
                 )}
 
@@ -56,7 +57,9 @@ export default function ExperiencePage() {
                       {exp.achievements.map((achievement, achIndex) => (
                         <li key={achIndex} className="flex items-start">
                           <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 mr-3 flex-shrink-0" />
-                          <span className="text-gray-700">{achievement}</span>
+                          <span className="text-gray-700">
+                            <MarkdownText>{achievement}</MarkdownText>
+                          </span>
                         </li>
                       ))}
                     </ul>

@@ -1,4 +1,5 @@
 import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
+import { MarkdownText } from '@/components/MarkdownText';
 
 export default function Home() {
   const { profile, experience, projects } = parseResumeMarkdown();
@@ -68,7 +69,7 @@ export default function Home() {
                 
                 {latestExperience.summary && (
                   <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                    {latestExperience.summary}
+                    <MarkdownText>{latestExperience.summary}</MarkdownText>
                   </p>
                 )}
                 

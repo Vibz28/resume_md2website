@@ -2,6 +2,22 @@ import fs from 'fs';
 import path from 'path';
 import type { ParsedContent, Profile, ExperienceEntry, Project } from './models';
 
+// Helper function to parse markdown formatting
+function parseMarkdownText(text: string): string {
+  if (!text) return '';
+  
+  // Convert **bold** to <strong>
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  // Convert *italic* to <em>
+  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  
+  // Convert `code` to <code>
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  
+  return text;
+}
+
 function parseWorkExperience(content: string): ExperienceEntry[] {
   const experience: ExperienceEntry[] = [];
   
@@ -11,63 +27,58 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
   
   const workText = workSection[1];
   
-  // Split by company entries (look for **Company Name** pattern)
-  const entries = workText.split(/(?=\*\*[^*]+\*\*\s*\n_)/);
+  // Split by company entries - look for **Company Name** followed by job titles
+  const companyMatches = workText.match(/\*\*([^*]+)\*\*[\s\S]*?(?=\*\*[^*]+\*\*(?!\s*_)|$)/g);
   
-  for (const entry of entries) {
-    if (entry.trim().length === 0) continue;
-    
-    const lines = entry.trim().split('\n');
-    
-    // Extract company name
-    const companyMatch = lines[0]?.match(/\*\*([^*]+)\*\*/);
-    if (!companyMatch) continue;
-    const employer = companyMatch[1].trim();
-    
-    // Extract title and dates
-    const titleLine = lines.find(line => line.startsWith('_**'));
-    if (!titleLine) continue;
-    
-    const titleMatch = titleLine.match(/_\*\*([^*]+)\*\*/);
-    const dateMatch = titleLine.match(/\*([^*]+)\*/);
-    
-    if (!titleMatch || !dateMatch) continue;
-    
-    const title = titleMatch[1].trim();
-    const timeframe = dateMatch[1].trim();
-    
-    // Extract location (usually after the pipe |)
-    const locationMatch = titleLine.match(/\|\s*([^|]+)$/);
-    const location = locationMatch ? locationMatch[1].trim() : '';
-    
-    // Extract bullet points as achievements
-    const achievements: string[] = [];
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (line.startsWith('- ')) {
-        achievements.push(line.substring(2).trim());
+  if (companyMatches) {
+    for (const companyEntry of companyMatches) {
+      const employer = companyEntry.match(/\*\*([^*]+)\*\*/)?.[1]?.trim();
+      if (!employer) continue;
+      
+      // Find all positions within this company
+      const positionMatches = companyEntry.match(/_\*\*([^*]+)\*\*_\s*\n\*([^*]+)\*[\s\S]*?(?=_\*\*|$)/g);
+      
+      if (positionMatches) {
+        for (const position of positionMatches) {
+          const titleMatch = position.match(/_\*\*([^*]+)\*\*_/);
+          const dateLocationMatch = position.match(/\*([^*]+)\*/);
+          
+          if (!titleMatch || !dateLocationMatch) continue;
+          
+          const title = titleMatch[1].trim();
+          const dateLocationStr = dateLocationMatch[1].trim();
+          
+          // Split timeframe and location
+          const parts = dateLocationStr.split('|').map(p => p.trim());
+          const timeframe = parts[0] || '';
+          const location = parts[1] || '';
+          
+          // Extract bullet points
+          const bulletMatches = position.match(/^- (.+)$/gm);
+          const achievements: string[] = bulletMatches ? bulletMatches.map(bullet => parseMarkdownText(bullet.substring(2).trim())) : [];
+          
+          // Create summary from first achievement
+          let summary = '';
+          if (achievements.length > 0) {
+            const rawSummary = achievements[0].replace(/<[^>]+>/g, ''); // Strip HTML for length check
+            summary = rawSummary.length > 150 
+              ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
+              : achievements[0]; // Use the formatted version
+          } else {
+            summary = `${title} role at ${employer} focused on advanced technology solutions.`;
+          }
+          
+          experience.push({
+            employer,
+            title,
+            timeframe,
+            location,
+            summary,
+            achievements
+          });
+        }
       }
     }
-    
-    // Create summary from first achievement or generic text
-    let summary = '';
-    if (achievements.length > 0) {
-      summary = achievements[0].length > 100 
-        ? achievements[0].substring(0, 100) + '...'
-        : achievements[0];
-    } else {
-      summary = `${title} role at ${employer} focused on advanced technology solutions.`;
-    }
-    
-    experience.push({
-      employer,
-      title,
-      timeframe,
-      location,
-      summary,
-      achievements
-    });
   }
   
   return experience;
