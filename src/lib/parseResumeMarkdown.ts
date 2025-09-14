@@ -22,19 +22,19 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
   const experience: ExperienceEntry[] = [];
   
   // Extract work experience section
-  const workSection = content.match(/## WORK EXPERIENCE\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const workSection = content.match(/## WORK EXPERIENCE\s*([\s\S]*?)(?=\n---|\n##|$)/);
   if (!workSection) return experience;
   
   const workText = workSection[1];
   
   // Split by company entries - look for **Company Name** pattern at start of line
-  const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*$)/gm).filter(block => block.trim());
+  const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*)/gm).filter(block => block.trim());
   
   for (const companyBlock of companyBlocks) {
     const lines = companyBlock.trim().split('\n');
     
     // Extract company name from first line
-    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*$/);
+    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*/);
     if (!companyMatch) continue;
     const employer = companyMatch[1].trim();
     

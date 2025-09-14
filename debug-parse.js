@@ -1,19 +1,22 @@
-const { parseResumeMarkdown } = require('./src/lib/parseResumeMarkdown');
+const { parseResumeMarkdown } = require('./src/lib/parseResumeMarkdown.ts');
+
+console.log('Testing resume parsing...');
 
 try {
-  const parsed = parseResumeMarkdown();
-  console.log('Profile:', parsed.profile);
-  console.log('Experience count:', parsed.experience.length);
-  parsed.experience.forEach((exp, i) => {
-    console.log(`Experience ${i + 1}:`, {
-      employer: exp.employer,
-      title: exp.title,
-      timeframe: exp.timeframe,
-      location: exp.location,
-      summary: exp.summary?.substring(0, 100) + '...',
-      achievements: exp.achievements.length
-    });
-  });
+  const result = parseResumeMarkdown();
+  console.log('Profile:', result.profile.name);
+  console.log('Experience entries:', result.experience.length);
+  
+  if (result.experience.length > 0) {
+    console.log('First experience:');
+    console.log('- Employer:', result.experience[0].employer);
+    console.log('- Title:', result.experience[0].title);
+    console.log('- Summary:', result.experience[0].summary);
+    console.log('- Achievements:', result.experience[0].achievements.length);
+  } else {
+    console.log('No experience entries found!');
+  }
 } catch (error) {
   console.error('Error:', error.message);
+  console.error('Stack:', error.stack);
 }
