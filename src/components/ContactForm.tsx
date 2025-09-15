@@ -47,7 +47,7 @@ export function ContactForm() {
     {
       icon: Linkedin,
       label: "LinkedIn",
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/in/vibhorjaney/",
       color: "hover:text-primary"
     }
   ];

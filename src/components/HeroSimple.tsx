@@ -67,8 +67,15 @@ export function HeroSimple() {
                   <Github className="h-5 w-5" />
                 </a>
               </Button>
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-teal-100 dark:hover:bg-teal-900">
-                <Linkedin className="h-5 w-5" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full hover:bg-teal-100 dark:hover:bg-teal-900"
+                asChild
+              >
+                <a href="https://www.linkedin.com/in/vibhorjaney/" target="_blank" rel="noopener noreferrer">
+                  <Linkedin className="h-5 w-5" />
+                </a>
               </Button>
               <Button 
                 variant="ghost" 
