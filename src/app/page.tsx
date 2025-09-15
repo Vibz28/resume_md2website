@@ -1,5 +1,6 @@
 import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
 import { MarkdownText } from '@/components/MarkdownText';
+import { getPath } from '@/lib/paths';
 
 export default function Home() {
   const { profile, experience, projects } = parseResumeMarkdown();
@@ -19,13 +20,13 @@ export default function Home() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
-                href="/resume_md2website/experience/"
+                href={getPath('/experience/')}
                 className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-blue-600 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 View Experience
               </a>
               <a
-                href="/resume_md2website/about/"
+                href={getPath('/about/')}
                 className="text-sm font-semibold leading-6 text-white hover:text-blue-100"
               >
                 Learn more <span aria-hidden="true">→</span>
@@ -75,7 +76,7 @@ export default function Home() {
                 
                 <div className="mt-6">
                   <a
-                    href="/resume_md2website/experience/"
+                    href={getPath('/experience/')}
                     className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
                   >
                     View full experience
@@ -99,7 +100,7 @@ export default function Home() {
                   Explore my {experience.length} professional roles covering AI, data science, and engineering leadership.
                 </p>
                 <a
-                  href="/resume_md2website/experience/"
+                  href={getPath('/experience/')}
                   className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
                 >
                   View experience →
@@ -114,7 +115,7 @@ export default function Home() {
                   Learn about my background, expertise, and professional journey.
                 </p>
                 <a
-                  href="/resume_md2website/about/"
+                  href={getPath('/about/')}
                   className="inline-flex items-center text-green-600 hover:text-green-800 font-medium"
                 >
                   Read more →
@@ -129,7 +130,7 @@ export default function Home() {
                   Discover key projects and technical achievements.
                 </p>
                 <a
-                  href="/resume_md2website/projects/"
+                  href={getPath('/projects/')}
                   className="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium"
                 >
                   View projects →
