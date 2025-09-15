@@ -6,33 +6,53 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { ExternalLink, Github, Play } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { Project } from '@/lib/models';
 
-export function ProjectsSection() {
-  const projects = [
-    {
-      title: "Cotton Pest Classification — Few-Shot Prototypical Networks",
-      description: "Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples. Trained on data from Li et al., 'Crop pest recognition in natural scenes using convolutional neural networks'.",
+interface ProjectsSectionProps {
+  projects?: Project[];
+}
+
+interface EnhancedProject {
+  title: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  category: string;
+  status: "Research" | "Production" | "Beta";
+  metrics: string[];
+  links: {
+    github?: string;
+    demo?: string;
+    paper?: string;
+  };
+}
+
+export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionProps) {
+  // Enhanced projects that combine markdown projects with additional hardcoded ones
+  const enhancedProjects: EnhancedProject[] = [
+    // From markdown: Cotton Pest Classification project
+    ...(markdownProjects && markdownProjects.length > 0 ? markdownProjects.map(proj => ({
+      title: proj.title.replace(/\([^)]*\)$/, '').trim(), // Remove (PyTorch) from title
+      description: proj.description,
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["PyTorch", "Few-Shot Learning", "Prototypical Networks", "Computer Vision", "Python"],
       category: "Agricultural AI",
-      status: "Research",
+      status: "Research" as const,
       metrics: ["Few-shot learning", "Agricultural application", "Published research"],
       links: {
-        github: "#",
-        paper: "https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi"
+        paper: proj.link // Use the actual link from markdown
       }
-    },
+    })) : []),
+    // Additional hardcoded projects (without placeholder links)
     {
       title: "AI Copilot for Manufacturing Operations",
       description: "Leading the development of an AI copilot experience targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features agentic orchestration and graph-based workflow engines.",
       image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP Tool Declarations", "Graph Workflows"],
       category: "Manufacturing AI",
-      status: "Production",
+      status: "Production" as const,
       metrics: ["5,000+ users", "Agentic orchestration", "GxP compliance"],
-      links: {
-        demo: "#"
-      }
+      links: {}  // No links available - buttons will be hidden
     },
     {
       title: "Batch Genealogy Data Product (BGDP)",
@@ -40,11 +60,9 @@ export function ProjectsSection() {
       image: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3NTc3OTYzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["SAP", "Oracle EBS", "Graph Databases", "AWS", "Python", "SQL"],
       category: "Data Architecture",
-      status: "Production",
+      status: "Production" as const,
       metrics: ["40%+ time reduction", "50% efficiency improvement", "7+ integrations"],
-      links: {
-        demo: "#"
-      }
+      links: {}  // No links available - buttons will be hidden
     },
     {
       title: "Microplate Classification System",
@@ -52,11 +70,9 @@ export function ProjectsSection() {
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["TensorFlow", "Computer Vision", "OpenCV", "Raspberry Pi", "Edge TPU", "Python"],
       category: "Laboratory Automation",
-      status: "Production",
+      status: "Production" as const,
       metrics: ["98.59% accuracy", "Edge deployment", "Laboratory automation"],
-      links: {
-        demo: "#"
-      }
+      links: {}  // No links available - buttons will be hidden
     },
     {
       title: "Banking Branch Management System",
@@ -64,11 +80,9 @@ export function ProjectsSection() {
       image: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3NTc3OTYzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["React", "Figma", "Adobe XD", "JavaScript", "UX Design", "Front-end"],
       category: "Financial Technology",
-      status: "Production",
+      status: "Production" as const,
       metrics: ["New product launch", "UX redesign", "React implementation"],
-      links: {
-        demo: "#"
-      }
+      links: {}  // No links available - buttons will be hidden
     },
     {
       title: "Anomaly Detection Model",
@@ -76,11 +90,9 @@ export function ProjectsSection() {
       image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
       technologies: ["Python", "FBProphet", "Statistical Analysis", "Time Series", "Anomaly Detection"],
       category: "Predictive Analytics",
-      status: "Production",
+      status: "Production" as const,
       metrics: ["Time series forecasting", "Statistical analysis", "Production deployment"],
-      links: {
-        demo: "#"
-      }
+      links: {}  // No links available - buttons will be hidden
     }
   ];
 
@@ -88,8 +100,8 @@ export function ProjectsSection() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredProjects = selectedCategory === "All" 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory);
+    ? enhancedProjects 
+    : enhancedProjects.filter((project: EnhancedProject) => project.category === selectedCategory);
 
   return (
     <section id="projects" className="py-20 bg-muted/30">
@@ -130,7 +142,7 @@ export function ProjectsSection() {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
+          {filteredProjects.map((project: EnhancedProject, index: number) => (
             <motion.div
               key={project.title}
               initial={{ opacity: 0, y: 50 }}
@@ -174,7 +186,7 @@ export function ProjectsSection() {
                       <div>
                         <h4 className="font-semibold text-sm mb-2">Key Metrics:</h4>
                         <div className="flex flex-wrap gap-1">
-                          {project.metrics.map((metric) => (
+                          {project.metrics.map((metric: string) => (
                             <Badge key={metric} variant="outline" className="text-xs">
                               {metric}
                             </Badge>
@@ -185,7 +197,7 @@ export function ProjectsSection() {
                       <div>
                         <h4 className="font-semibold text-sm mb-2">Technologies:</h4>
                         <div className="flex flex-wrap gap-1">
-                          {project.technologies.slice(0, 4).map((tech) => (
+                          {project.technologies.slice(0, 4).map((tech: string) => (
                             <Badge key={tech} variant="secondary" className="text-xs">
                               {tech}
                             </Badge>
@@ -200,20 +212,35 @@ export function ProjectsSection() {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      {project.links.github && (
-                        <Button size="sm" variant="outline" className="flex-1">
+                      {project.links.github && project.links.github !== "#" && (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => window.open(project.links.github!, '_blank')}
+                        >
                           <Github className="mr-2 h-4 w-4" />
                           Code
                         </Button>
                       )}
-                      {project.links.demo && (
-                        <Button size="sm" variant="outline" className="flex-1">
+                      {project.links.demo && project.links.demo !== "#" && (
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => window.open(project.links.demo!, '_blank')}
+                        >
                           <Play className="mr-2 h-4 w-4" />
                           Demo
                         </Button>
                       )}
-                      {project.links.paper && (
-                        <Button size="sm" variant="default" className="flex-1">
+                      {project.links.paper && project.links.paper !== "#" && (
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          className="flex-1"
+                          onClick={() => window.open(project.links.paper!, '_blank')}
+                        >
                           <ExternalLink className="mr-2 h-4 w-4" />
                           Paper
                         </Button>

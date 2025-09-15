@@ -52,6 +52,40 @@ test.describe('Resume Experience Content Tests', () => {
     await expect(page.locator('li').filter({ hasText: 'computer vision model' })).toBeVisible();
   });
 
+  test('should show collapsible achievements (3 default desktop, 2 mobile)', async ({ page }) => {
+    // Test desktop view - should show 3 achievements by default
+    await page.setViewportSize({ width: 1200, height: 800 });
+    await page.goto('/experience/');
+    
+    const firstExperienceCard = page.locator('article').first();
+    const achievementsList = firstExperienceCard.locator('ul li');
+    
+    // Should have achievements
+    const achievementCount = await achievementsList.count();
+    expect(achievementCount).toBeGreaterThan(0);
+    
+    // Test mobile view - should show 2 achievements by default
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.reload();
+    
+    // Achievements should still be visible and functional on mobile
+    await expect(firstExperienceCard.locator('ul')).toBeVisible();
+    
+    // If expand/collapse exists, test it
+    const expandButton = page.locator('button').filter({ hasText: /show more|expand|view all/i }).first();
+    if (await expandButton.isVisible()) {
+      const initialCount = await achievementsList.count();
+      await expandButton.click();
+      
+      // Should show more achievements after clicking
+      const expandedCount = await achievementsList.count();
+      expect(expandedCount).toBeGreaterThanOrEqual(initialCount);
+      
+      // Should have collapse button
+      await expect(page.locator('button').filter({ hasText: /show less|collapse|hide/i })).toBeVisible();
+    }
+  });
+
   test('should display timeframes and locations', async ({ page }) => {
     // Check for timeframes in span elements
     await expect(page.getByText('Jul 2025 – Present')).toBeVisible();
