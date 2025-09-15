@@ -11,20 +11,20 @@ test.describe('Home Page Contract', () => {
     const hero = page.locator('main').first();
     await expect(hero).toBeVisible();
     
-    // Should contain name (Vibhor Janey)
-    await expect(page.locator('text=Vibhor Janey')).toBeVisible();
+    // Should contain name (Vibhor Janey) - use heading selector to be more specific
+    await expect(page.getByRole('heading', { name: 'Vibhor Janey' })).toBeVisible();
     
-    // Should contain headline/title
-    await expect(page.locator('text=AI Solution Architect')).toBeVisible();
+    // Should contain headline/title - use first occurrence to avoid strict mode
+    await expect(page.getByText('AI Solution Architect').first()).toBeVisible();
   });
 
   test('should have navigation links to all main pages', async ({ page }) => {
     await page.goto('/');
     
-    // Check for navigation links
-    await expect(page.locator('a[href="/experience"], a[href*="experience"]')).toBeVisible();
-    await expect(page.locator('a[href="/projects"], a[href*="projects"]')).toBeVisible(); 
-    await expect(page.locator('a[href="/about"], a[href*="about"]')).toBeVisible();
+    // Check for navigation links - use first() to avoid strict mode violations
+    await expect(page.locator('a[href*="experience"]').first()).toBeVisible();
+    await expect(page.locator('a[href*="projects"]').first()).toBeVisible(); 
+    await expect(page.locator('a[href*="about"]').first()).toBeVisible();
   });
 
   test('should allow navigation to each main page in one click', async ({ page }) => {

@@ -27,14 +27,14 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
   
   const workText = workSection[1];
   
-  // Split by company entries - look for **Company Name** pattern (but not Summary:)
-  const companyBlocks = workText.split(/(?=^\*\*(?!Summary:)[^*]+\*\*\s*)/gm).filter(block => block.trim());
+  // Split by company entries - look for **Company Name** pattern at start of line
+  const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*$)/gm).filter(block => block.trim());
   
   for (const companyBlock of companyBlocks) {
     const lines = companyBlock.trim().split('\n');
     
     // Extract company name from first line
-    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*/);
+    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*$/);
     if (!companyMatch) continue;
     const employer = companyMatch[1].trim();
     
@@ -45,24 +45,11 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim();
       
-      // Check if this is a position title line
+      // Check if this is a position title line (format: _**Title**_)
       if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
         // Save previous position if exists
-        if (currentPosition) {
+        if (currentPosition && bulletPoints.length > 0) {
           currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
-          
-          // Use dedicated summary if available, otherwise create from first achievement
-          if (!currentPosition.summary) {
-            if (currentPosition.achievements.length > 0) {
-              const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
-              currentPosition.summary = rawSummary.length > 150 
-                ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-                : currentPosition.achievements[0];
-            } else {
-              currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
-            }
-          }
-          
           experience.push(currentPosition);
           bulletPoints = [];
         }
@@ -78,10 +65,9 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
             summary: '',
             achievements: []
           };
-          bulletPoints = [];
         }
       }
-      // Check if this is a date/location line
+      // Check if this is a date/location line (format: *Date | Location*)
       else if (line.match(/^\*([^*]+)\*$/)) {
         if (currentPosition) {
           const dateLocationMatch = line.match(/^\*([^*]+)\*$/);
@@ -93,7 +79,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
         }
       }
-      // Check if this is a summary line
+      // Check if this is a summary line (format: **Summary:** text)
       else if (line.match(/^\*\*Summary:\*\*\s*(.+)$/)) {
         if (currentPosition) {
           const summaryMatch = line.match(/^\*\*Summary:\*\*\s*(.+)$/);
@@ -102,7 +88,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
         }
       }
-      // Check if this is a bullet point
+      // Check if this is a bullet point (format: - text)
       else if (line.startsWith('- ')) {
         let bulletText = line.substring(2).trim();
         
@@ -111,30 +97,33 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
         while (j < lines.length && lines[j].trim() && 
                !lines[j].trim().startsWith('- ') && 
                !lines[j].trim().match(/^_\*\*([^*]+)\*\*_$/) &&
-               !lines[j].trim().match(/^\*([^*]+)\*$/)) {
+               !lines[j].trim().match(/^\*([^*]+)\*$/) &&
+               !lines[j].trim().match(/^\*\*Summary:\*\*/)) {
           bulletText += ' ' + lines[j].trim();
           j++;
         }
         i = j - 1; // Skip processed lines
         
-        bulletPoints.push(bulletText);
+        if (bulletText.trim()) {
+          bulletPoints.push(bulletText);
+        }
       }
     }
     
-    // Don't forget the last position
+    // Don't forget the last position in the company
     if (currentPosition) {
-      currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
+      if (bulletPoints.length > 0) {
+        currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
+      }
       
-      // Use dedicated summary if available, otherwise create from first achievement
-      if (!currentPosition.summary) {
-        if (currentPosition.achievements.length > 0) {
-          const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
-          currentPosition.summary = rawSummary.length > 150 
-            ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-            : currentPosition.achievements[0];
-        } else {
-          currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
-        }
+      // Ensure summary is set (use dedicated summary or create from first achievement)
+      if (!currentPosition.summary && currentPosition.achievements?.length > 0) {
+        const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
+        currentPosition.summary = rawSummary.length > 150 
+          ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
+          : currentPosition.achievements[0];
+      } else if (!currentPosition.summary) {
+        currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
       }
       
       experience.push(currentPosition);
