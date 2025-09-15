@@ -5,8 +5,8 @@ const isExport = process.env.NEXT_EXPORT === 'true';
 const nextConfig = {
   output: isExport ? 'export' : undefined,
   trailingSlash: true,
-  basePath: (isProd || isExport) ? '/resume_md2website' : '',
-  assetPrefix: (isProd || isExport) ? '/resume_md2website' : '',
+  // Remove basePath and assetPrefix for GitHub Pages main branch deployment
+  // GitHub Actions configure-pages will handle path configuration automatically
   images: {
     unoptimized: true
   }
