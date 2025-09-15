@@ -24,8 +24,18 @@ export interface Project {
   link?: string;
 }
 
+export interface Publication {
+  title: string;
+  authors?: string;
+  venue?: string;
+  year?: number;
+  link?: string;
+  category?: string;
+}
+
 export interface ParsedContent {
   profile: Profile;
   experience: ExperienceEntry[];
   projects: Project[];
+  publications: Publication[];
 }

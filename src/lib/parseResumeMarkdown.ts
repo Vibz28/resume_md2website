@@ -1,136 +1,239 @@
 import fs from 'fs';
 import path from 'path';
-import type { ParsedContent, Profile, ExperienceEntry, Project } from './models';
+import type { ParsedContent, Profile, ExperienceEntry, Project, Publication } from './models';
+
+// Cache for parsed markdown text to avoid re-processing
+const markdownCache = new Map<string, string>();
 
 // Helper function to parse markdown formatting
 function parseMarkdownText(text: string): string {
   if (!text) return '';
   
+  // Check cache first
+  if (markdownCache.has(text)) {
+    return markdownCache.get(text)!;
+  }
+  
+  let result = text;
+  
   // Convert **bold** to <strong>
-  text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   
   // Convert *italic* to <em>
-  text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  result = result.replace(/\*([^*]+)\*/g, '<em>$1</em>');
   
   // Convert `code` to <code>
-  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  result = result.replace(/`([^`]+)`/g, '<code>$1</code>');
   
-  return text;
+  // Cache the result (limit cache size to prevent memory leaks)
+  if (markdownCache.size > 1000) {
+    const firstKey = markdownCache.keys().next().value;
+    if (firstKey !== undefined) {
+      markdownCache.delete(firstKey);
+    }
+  }
+  markdownCache.set(text, result);
+  
+  return result;
 }
+
+// Cache for parsed content to avoid re-parsing the entire resume
+const contentCache = new Map<string, ParsedContent>();
 
 function parseWorkExperience(content: string): ExperienceEntry[] {
   const experience: ExperienceEntry[] = [];
   
-  // Extract work experience section
-  const workSection = content.match(/## WORK EXPERIENCE\s*([\s\S]*?)(?=\n---|\n##|$)/);
-  if (!workSection) return experience;
+  // Validate input
+  if (!content || typeof content !== 'string') {
+    console.warn('Invalid content provided to parseWorkExperience');
+    return experience;
+  }
   
-  const workText = workSection[1];
+  // Extract work experience section with more flexible pattern matching
+  const workSection = content.match(/## (?:WORK )?EXPERIENCE\s*([\s\S]*?)(?=\n---|\n##|$)/i);
+  if (!workSection || !workSection[1]) {
+    console.warn('No work experience section found');
+    return experience;
+  }
+  
+  const workText = workSection[1].trim();
+  if (!workText) {
+    console.warn('Work experience section is empty');
+    return experience;
+  }
   
   // Split by company entries - look for **Company Name** pattern at start of line
   const companyBlocks = workText.split(/(?=^\*\*[^*]+\*\*\s*$)/gm).filter(block => block.trim());
   
   for (const companyBlock of companyBlocks) {
-    const lines = companyBlock.trim().split('\n');
-    
-    // Extract company name from first line
-    const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*$/);
-    if (!companyMatch) continue;
-    const employer = companyMatch[1].trim();
-    
-    // Find all positions within this company
-    let currentPosition: any = null;
-    let bulletPoints: string[] = [];
-    
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
+    try {
+      const lines = companyBlock.trim().split('\n');
       
-      // Check if this is a position title line (format: _**Title**_)
-      if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
-        // Save previous position if exists
-        if (currentPosition && bulletPoints.length > 0) {
-          currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
-          experience.push(currentPosition);
-          bulletPoints = [];
-        }
-        
-        // Start new position
-        const titleMatch = line.match(/^_\*\*([^*]+)\*\*_$/);
-        if (titleMatch) {
-          currentPosition = {
-            employer,
-            title: titleMatch[1].trim(),
-            timeframe: '',
-            location: '',
-            summary: '',
-            achievements: []
-          };
-        }
+      // Extract company name from first line with validation
+      const companyMatch = lines[0]?.match(/^\*\*([^*]+)\*\*\s*$/);
+      if (!companyMatch || !companyMatch[1]) {
+        console.warn('Invalid company format in block:', lines[0]);
+        continue;
       }
-      // Check if this is a date/location line (format: *Date | Location*)
-      else if (line.match(/^\*([^*]+)\*$/)) {
-        if (currentPosition) {
-          const dateLocationMatch = line.match(/^\*([^*]+)\*$/);
-          if (dateLocationMatch) {
-            const dateLocationStr = dateLocationMatch[1].trim();
-            const parts = dateLocationStr.split('|').map(p => p.trim());
-            currentPosition.timeframe = parts[0] || '';
-            currentPosition.location = parts[1] || '';
+      const employer = companyMatch[1].trim();
+      
+      // Validate employer name
+      if (!employer || employer.length < 2) {
+        console.warn('Invalid employer name:', employer);
+        continue;
+      }
+      
+      // Find all positions within this company
+      let currentPosition: Partial<ExperienceEntry> | null = null;
+      let bulletPoints: string[] = [];
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue; // Skip empty lines
+        
+        // Check if this is a position title line (format: _**Title**_)
+        if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
+          // Save previous position if exists and is valid
+          if (currentPosition && isValidPosition(currentPosition, bulletPoints)) {
+            currentPosition.achievements = bulletPoints
+              .filter(bullet => bullet.trim())
+              .map(bullet => parseMarkdownText(bullet));
+            experience.push(currentPosition as ExperienceEntry);
+            bulletPoints = [];
+          }
+          
+          // Start new position
+          const titleMatch = line.match(/^_\*\*([^*]+)\*\*_$/);
+          if (titleMatch && titleMatch[1]?.trim()) {
+            currentPosition = {
+              employer,
+              title: titleMatch[1].trim(),
+              timeframe: '',
+              location: '',
+              summary: '',
+              achievements: []
+            };
+          }
+        }
+        // Check if this is a date/location line (format: *Date | Location*)
+        else if (line.match(/^\*([^*]+)\*$/)) {
+          if (currentPosition) {
+            const dateLocationMatch = line.match(/^\*([^*]+)\*$/);
+            if (dateLocationMatch && dateLocationMatch[1]) {
+              const dateLocationStr = dateLocationMatch[1].trim();
+              const parts = dateLocationStr.split('|').map(p => p.trim());
+              currentPosition.timeframe = parts[0] || '';
+              currentPosition.location = parts[1] || '';
+              
+              // Validate timeframe format
+              if (currentPosition.timeframe && !isValidTimeframe(currentPosition.timeframe)) {
+                console.warn('Invalid timeframe format:', currentPosition.timeframe);
+              }
+            }
+          }
+        }
+        // Check if this is a summary line (format: **Summary:** text)
+        else if (line.match(/^\*\*Summary:\*\*\s*(.+)$/)) {
+          if (currentPosition) {
+            const summaryMatch = line.match(/^\*\*Summary:\*\*\s*(.+)$/);
+            if (summaryMatch && summaryMatch[1]?.trim()) {
+              currentPosition.summary = parseMarkdownText(summaryMatch[1].trim());
+            }
+          }
+        }
+        // Check if this is a bullet point (format: - text)
+        else if (line.startsWith('- ')) {
+          let bulletText = line.substring(2).trim();
+          
+          // Handle multi-line bullet points with improved logic
+          let j = i + 1;
+          while (j < lines.length && lines[j]?.trim()) {
+            const nextLine = lines[j].trim();
+            
+            // Stop if we hit another bullet point or section marker
+            if (nextLine.startsWith('- ') || 
+                nextLine.match(/^_\*\*([^*]+)\*\*_$/) ||
+                nextLine.match(/^\*([^*]+)\*$/) ||
+                nextLine.match(/^\*\*Summary:\*\*/)) {
+              break;
+            }
+            
+            bulletText += ' ' + nextLine;
+            j++;
+          }
+          i = j - 1; // Skip processed lines
+          
+          // Validate bullet point content
+          if (bulletText.trim() && bulletText.length >= 10) {
+            bulletPoints.push(bulletText);
+          } else if (bulletText.trim()) {
+            console.warn('Bullet point too short, may be invalid:', bulletText);
           }
         }
       }
-      // Check if this is a summary line (format: **Summary:** text)
-      else if (line.match(/^\*\*Summary:\*\*\s*(.+)$/)) {
-        if (currentPosition) {
-          const summaryMatch = line.match(/^\*\*Summary:\*\*\s*(.+)$/);
-          if (summaryMatch) {
-            currentPosition.summary = parseMarkdownText(summaryMatch[1].trim());
+      
+      // Don't forget the last position in the company
+      if (currentPosition && isValidPosition(currentPosition, bulletPoints)) {
+        if (bulletPoints.length > 0) {
+          currentPosition.achievements = bulletPoints
+            .filter(bullet => bullet.trim())
+            .map(bullet => parseMarkdownText(bullet));
+        }
+        
+        // Ensure summary is set with improved logic
+        if (!currentPosition.summary || currentPosition.summary.trim() === '') {
+          if (currentPosition.achievements && currentPosition.achievements.length > 0) {
+            const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '').trim();
+            if (rawSummary.length > 150) {
+              // Find a good break point (sentence end or word boundary)
+              const breakPoint = rawSummary.indexOf('.', 120);
+              const cutoff = breakPoint > 0 ? breakPoint + 1 : 150;
+              currentPosition.summary = parseMarkdownText(rawSummary.substring(0, cutoff).trim() + '...');
+            } else {
+              currentPosition.summary = currentPosition.achievements[0];
+            }
+          } else {
+            currentPosition.summary = `${currentPosition.title} role at ${employer}.`;
           }
         }
-      }
-      // Check if this is a bullet point (format: - text)
-      else if (line.startsWith('- ')) {
-        let bulletText = line.substring(2).trim();
         
-        // Handle multi-line bullet points
-        let j = i + 1;
-        while (j < lines.length && lines[j].trim() && 
-               !lines[j].trim().startsWith('- ') && 
-               !lines[j].trim().match(/^_\*\*([^*]+)\*\*_$/) &&
-               !lines[j].trim().match(/^\*([^*]+)\*$/) &&
-               !lines[j].trim().match(/^\*\*Summary:\*\*/)) {
-          bulletText += ' ' + lines[j].trim();
-          j++;
-        }
-        i = j - 1; // Skip processed lines
-        
-        if (bulletText.trim()) {
-          bulletPoints.push(bulletText);
-        }
+        experience.push(currentPosition as ExperienceEntry);
       }
-    }
-    
-    // Don't forget the last position in the company
-    if (currentPosition) {
-      if (bulletPoints.length > 0) {
-        currentPosition.achievements = bulletPoints.map(bullet => parseMarkdownText(bullet));
-      }
-      
-      // Ensure summary is set (use dedicated summary or create from first achievement)
-      if (!currentPosition.summary && currentPosition.achievements?.length > 0) {
-        const rawSummary = currentPosition.achievements[0].replace(/<[^>]+>/g, '');
-        currentPosition.summary = rawSummary.length > 150 
-          ? parseMarkdownText(rawSummary.substring(0, 150) + '...')
-          : currentPosition.achievements[0];
-      } else if (!currentPosition.summary) {
-        currentPosition.summary = `${currentPosition.title} role at ${employer} focused on advanced technology solutions.`;
-      }
-      
-      experience.push(currentPosition);
+    } catch (error) {
+      console.warn('Error parsing company block:', error);
+      continue; // Skip this block but continue with others
     }
   }
   
   return experience;
+}
+
+// Helper function to validate position data
+function isValidPosition(position: Partial<ExperienceEntry>, bulletPoints: string[]): boolean {
+  return !!(
+    position &&
+    position.employer &&
+    position.title &&
+    position.employer.trim().length >= 2 &&
+    position.title.trim().length >= 2 &&
+    (bulletPoints.length > 0 || position.summary)
+  );
+}
+
+// Helper function to validate timeframe format
+function isValidTimeframe(timeframe: string): boolean {
+  if (!timeframe) return false;
+  
+  // Check for common patterns like:
+  // "Jan 2020 – Present", "2020 – 2021", "Jul 2020 – Dec 2021"
+  const patterns = [
+    /^\w{3} \d{4} – Present$/i,
+    /^\d{4} – \d{4}$/,
+    /^\w{3} \d{4} – \w{3} \d{4}$/i,
+    /^Present$/i
+  ];
+  
+  return patterns.some(pattern => pattern.test(timeframe.trim()));
 }
 
 function parseProjects(content: string): Project[] {
@@ -180,10 +283,76 @@ function parseSkills(content: string): string[] {
   return skills;
 }
 
+function parsePublications(content: string): Publication[] {
+  const publications: Publication[] = [];
+  
+  const publicationsSection = content.match(/## PUBLICATIONS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!publicationsSection) return publications;
+  
+  const publicationsText = publicationsSection[1];
+  
+  // Look for publication patterns:
+  // **Title** - Authors (Year). *Venue*. [Link](URL)
+  // or simpler: **Title** - Description/Authors/Venue info
+  const publicationLines = publicationsText.split('\n').filter(line => line.trim() && line.startsWith('**'));
+  
+  for (const line of publicationLines) {
+    // Extract title from **Title** 
+    const titleMatch = line.match(/^\*\*([^*]+)\*\*/);
+    if (!titleMatch) continue;
+    
+    const title = titleMatch[1].trim();
+    let authors = '';
+    let venue = '';
+    let year: number | undefined = undefined;
+    let link: string | undefined = undefined;
+    
+    // Extract link if present: [text](url)
+    const linkMatch = line.match(/\[([^\]]+)\]\(([^)]+)\)/);
+    if (linkMatch) {
+      link = linkMatch[2];
+    }
+    
+    // Extract year if present (4 digits)
+    const yearMatch = line.match(/\b(19|20)\d{2}\b/);
+    if (yearMatch) {
+      year = parseInt(yearMatch[0]);
+    }
+    
+    // Extract venue from italic text *venue*
+    const venueMatch = line.match(/\*([^*]+)\*/);
+    if (venueMatch) {
+      venue = venueMatch[1].trim();
+    }
+    
+    // The remaining text after title could be authors/venue info
+    const remainingText = line.replace(/^\*\*[^*]+\*\*/, '').replace(/\[([^\]]+)\]\(([^)]+)\)/, '').replace(/\*([^*]+)\*/, '').trim();
+    if (remainingText.startsWith(' - ')) {
+      authors = remainingText.substring(3).trim();
+    }
+    
+    publications.push({
+      title,
+      authors: authors || undefined,
+      venue: venue || undefined,
+      year,
+      link
+    });
+  }
+  
+  return publications;
+}
+
 export function parseResumeMarkdown(): ParsedContent {
   try {
     const resumePath = path.join(process.cwd(), 'resume_vibhor_janey_updated_aug_2025.md');
     const content = fs.readFileSync(resumePath, 'utf-8');
+    
+    // Check cache first (use file content as cache key)
+    const cacheKey = content.length + '_' + content.substring(0, 100).replace(/\s/g, '');
+    if (contentCache.has(cacheKey)) {
+      return contentCache.get(cacheKey)!;
+    }
 
     // Parse profile information
     const lines = content.split('\n');
@@ -222,15 +391,28 @@ export function parseResumeMarkdown(): ParsedContent {
       contacts
     };
 
-    // Parse experience and projects
+    // Parse experience, projects, and publications
     const experience = parseWorkExperience(content);
     const projects = parseProjects(content);
+    const publications = parsePublications(content);
 
-    return {
+    const result = {
       profile,
       experience,
-      projects
+      projects,
+      publications
     };
+
+    // Cache the result (limit cache size to prevent memory leaks)
+    if (contentCache.size > 50) {
+      const firstKey = contentCache.keys().next().value;
+      if (firstKey !== undefined) {
+        contentCache.delete(firstKey);
+      }
+    }
+    contentCache.set(cacheKey, result);
+
+    return result;
   } catch (error) {
     console.error('Error parsing resume:', error);
     
@@ -266,7 +448,8 @@ export function parseResumeMarkdown(): ParsedContent {
           description: 'Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples.',
           link: 'https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi'
         }
-      ]
+      ],
+      publications: []
     };
   }
 }

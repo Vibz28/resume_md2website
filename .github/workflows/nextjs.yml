@@ -5,9 +5,9 @@
 name: Deploy Next.js site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  # Runs on pushes targeting deployment branches
   push:
-    branches: ["main"]
+    branches: ["production-deploy", "main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -80,8 +80,9 @@ jobs:
         with:
           path: ./out
 
-  # Deployment job
+  # Deployment job - only runs for production-deploy branch
   deploy:
+    if: github.ref == 'refs/heads/production-deploy'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

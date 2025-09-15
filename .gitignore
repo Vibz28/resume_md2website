@@ -90,3 +90,61 @@ constitution_update_checklist.md
 
 # Debug files
 debug/
+
+# Design and development files (not needed in production)
+figma_design/
+figma_designs/
+*.fig
+
+# Test files and reports (not needed in production)
+tests/
+test-results/
+playwright-report/
+playwright.config.ts
+coverage/
+manual-test-checklist.md
+*-test-checklist.md
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Development documentation (keep main README.md)
+docs/development/
+docs/testing/
+DEVELOPMENT.md
+TESTING.md
+
+# Local scripts and utilities
+scripts/local/
+scripts/dev/
+*.local.js
+*.dev.js
+
+# Temporary files and backups
+*.tmp
+*.temp
+*.backup
+*.bak
+*.old
+
+# Package manager lockfiles (keep package-lock.json for consistency)
+# Comment out if you want to include yarn.lock
+# yarn.lock
+# pnpm-lock.yaml
+
+# Build artifacts and generated files
+build/
+dist/
+*.tsbuildinfo
+
+# Environment and configuration overrides
+.env.local
+.env.development
+.env.test
+.env.production
+config.local.*
+
+# Deployment artifacts (will be generated during CI/CD)
+deployment/
+deploy/
