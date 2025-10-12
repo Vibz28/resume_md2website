@@ -115,6 +115,7 @@ playwright-report/
 playwright.config.ts
 coverage/
 *-test-checklist.md
+!docs/manual-test-checklist.md
 *.test.js
 *.test.ts
 *.spec.js
