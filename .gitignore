@@ -1,6 +1,14 @@
 # Dependencies
 node_modules/
 .pnpm-debug.log*
+.pnpm-store/
+.yarn/
+.yarnrc.yml
+.yarnrc.yaml
+yarn.lock
+pnpm-lock.yaml
+pnpm-debug.log*
+package-lock.json
 
 # Next.js build output
 .next/
@@ -80,13 +88,18 @@ temp/
 # Local development
 .vercel
 
-# Keep docs/ folder (GitHub Pages deployment)
+# Keep docs/ folder (GitHub Pages deployment + consolidated documentation)
 !docs/
 
 # Spec-Kit files
 .specify/scripts/
 .specify/templates/
+.github/prompts/
 constitution_update_checklist.md
+
+# Legacy documentation folders (now consolidated into docs/)
+.docs/
+specs/
 
 # Debug files
 debug/
@@ -128,11 +141,6 @@ scripts/dev/
 *.bak
 *.old
 
-# Package manager lockfiles (keep package-lock.json for consistency)
-# Comment out if you want to include yarn.lock
-# yarn.lock
-# pnpm-lock.yaml
-
 # Build artifacts and generated files
 build/
 dist/
@@ -148,3 +156,7 @@ config.local.*
 # Deployment artifacts (will be generated during CI/CD)
 deployment/
 deploy/
+
+# Bun
+.bun
+# bun.lockb  # Keep this for reproducible builds (recommended)

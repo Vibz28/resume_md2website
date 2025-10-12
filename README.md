@@ -17,13 +17,14 @@ This project transforms a structured resume markdown file into a professional we
 
 ## 🛠 Technology Stack
 
+- **Runtime**: Bun 1.3+ (JavaScript/TypeScript runtime & package manager)
 - **Frontend Framework**: Next.js 14.2.7 with App Router
 - **Language**: TypeScript 5+ with strict type checking
 - **Styling**: Tailwind CSS 3.4+ with responsive utilities
 - **UI Library**: Radix UI primitives with Lucide React icons  
 - **Animation**: Framer Motion for smooth interactions
 - **Testing**: Playwright for comprehensive end-to-end testing
-- **Deployment**: GitHub Pages with automated CI/CD pipeline
+- **Deployment**: GitHub Pages with automated CI/CD pipeline (Bun-powered)
 - **Build System**: Static export optimized for GitHub Pages
 - **Data Processing**: Custom markdown parser with regex extraction
 - **Performance**: React optimizations with lazy loading
@@ -67,7 +68,11 @@ resume_md2website/
 │       ├── parseResumeMarkdown.ts # Core parsing engine
 │       ├── paths.ts          # Environment path utilities
 │       └── pdfGenerator.ts   # PDF export functionality
-├── docs/                     # Generated static build (GitHub Pages)
+├── docs/                     # Generated static build (GitHub Pages) + consolidated documentation
+│   ├── specs/               # Project specifications and contracts
+│   ├── BUN_MIGRATION.md     # Bun migration guide
+│   ├── DEPLOYMENT_SUMMARY.md # Deployment documentation
+│   └── manual-test-checklist.md # Testing documentation
 ├── out/                      # Next.js export output directory
 ├── next.config.js           # Next.js build configuration
 ├── package.json             # Dependencies and npm scripts
@@ -205,8 +210,9 @@ _**Second Position** (if multiple roles at same company)_
 ## 🚀 Development Setup
 
 ### Prerequisites
-- **Node.js**: Version 20.x or later (recommended for optimal performance)
-- **npm**: Package manager (included with Node.js)
+- **Bun**: Version 1.3.x or later (JavaScript runtime & package manager)
+  - Install: `irm bun.com/install.ps1 | iex` (Windows PowerShell)
+  - Verify: `bun --version`
 - **Git**: For version control and deployment
 - **Modern Browser**: Chrome, Firefox, Safari, or Edge for testing
 
@@ -217,11 +223,11 @@ _**Second Position** (if multiple roles at same company)_
 git clone https://github.com/Vibz28/resume_md2website.git
 cd resume_md2website
 
-# 2. Install dependencies
-npm install
+# 2. Install dependencies with Bun
+bun install
 
 # 3. Start development server
-npm run dev
+bun run dev
 
 # 4. Open browser to http://localhost:3000
 ```
@@ -230,25 +236,25 @@ npm run dev
 
 ```bash
 # Development
-npm run dev          # Start development server (localhost:3000)
-npm run build        # Production build
-npm run start        # Start production server locally
-npm run lint         # Run ESLint code analysis
+bun run dev          # Start development server (localhost:3000)
+bun run build        # Production build
+bun run start        # Start production server locally
+bun run lint         # Run ESLint code analysis
 
 # Static Export (GitHub Pages)
-npm run export       # Build + copy to docs/ folder for GitHub Pages
+bun run export       # Build + copy to docs/ folder for GitHub Pages
 
 # Testing
-npm run test         # Run Playwright tests (if test files exist)
-npm run test:ui      # Interactive test runner
-npm run test:report  # Generate HTML test report
+bun run test         # Run Playwright tests
+bun run test:ui      # Interactive test runner
+bun run test:report  # Generate HTML test report
 ```
 
 ## 📦 GitHub Actions Deployment
 
 ### Automated CI/CD Pipeline
 
-The project uses GitHub Actions for automated deployment to GitHub Pages. The workflow is defined in `.github/workflows/nextjs.yml`:
+The project uses GitHub Actions with **Bun runtime** for automated deployment to GitHub Pages. The workflow is defined in `.github/workflows/nextjs.yml`:
 
 #### Workflow Configuration
 
@@ -274,13 +280,13 @@ concurrency:
 
 1. **Environment Setup**: 
    - Ubuntu latest runner
-   - Node.js 20.x with automatic package manager detection
-   - Dependency caching for faster builds
+   - Bun 1.3.x with automatic dependency installation
+   - Cache for Bun install cache and Next.js build cache
 
 2. **Build Steps**:
    ```bash
-   # Automatic dependency installation (npm ci)
-   # Next.js build with static export
+   # Automatic dependency installation (bun install --frozen-lockfile)
+   # Next.js build with static export (bun x --bun next build)
    # Artifact upload to GitHub Pages
    ```
 
@@ -301,7 +307,7 @@ For manual deployments or troubleshooting:
 
 ```bash
 # 1. Generate static export
-npm run export
+bun run export
 
 # 2. Verify build output
 ls -la docs/         # Check generated files
@@ -339,10 +345,10 @@ const nextConfig = {
 1. **Build Failures**:
    ```bash
    # Check for TypeScript errors
-   npm run build
+   bun run build
    
    # Fix linting issues
-   npm run lint
+   bun run lint
    ```
 
 2. **404 Errors on GitHub Pages**:
@@ -368,13 +374,13 @@ const nextConfig = {
 
 2. **Test changes locally**:
    ```bash
-   npm run dev
+   bun run dev
    # Visit http://localhost:3000 to preview
    ```
 
 3. **Deploy to production**:
    ```bash
-   npm run export
+   bun run export
    git add -A
    git commit -m "Update professional experience"
    git push origin main
