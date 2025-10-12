@@ -99,7 +99,6 @@ constitution_update_checklist.md
 
 # Legacy documentation folders (now consolidated into docs/)
 .docs/
-specs/
 
 # Debug files
 debug/
@@ -115,7 +114,6 @@ test-results/
 playwright-report/
 playwright.config.ts
 coverage/
-manual-test-checklist.md
 *-test-checklist.md
 *.test.js
 *.test.ts
