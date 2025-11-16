@@ -1,34 +1,46 @@
 # Resume-to-Website Project
 
-A modern, responsive personal website built from resume markdown data, featuring intelligent content parsing, professional timeline display, and automated GitHub Pages deployment.
+A modern, responsive personal website built from resume markdown data, featuring intelligent content parsing, professional timeline display, dark mode support, and automated GitHub Pages deployment.
 
 ## 🎯 Project Overview
 
 This project transforms a structured resume markdown file into a professional website with automated content extraction and responsive design. The platform intelligently parses professional data and presents it across multiple sections:
 
 - **Home**: Hero section with current role highlight and smooth scroll navigation
-- **Experience**: Comprehensive professional timeline with detailed achievements  
+- **Experience**: Comprehensive professional timeline with detailed achievements
 - **Projects**: Technical projects showcase with conditional button rendering
 - **About**: Personal bio, skills matrix, and contact information
+- **Publications**: Academic and professional publications display
 
 ## 🚀 Live Demo
 
 **Production Website**: https://vibz28.github.io/resume_md2website
 
+## ✨ Current Features
+
+### Fully Implemented
+- ✅ **Responsive Design**: Mobile-first approach with hamburger navigation
+- ✅ **Dark Mode**: System preference detection with manual toggle and localStorage persistence
+- ✅ **PDF Export**: Client-side PDF generation from resume data
+- ✅ **Contact Form**: Client-side contact form with mailto integration
+- ✅ **Publications Section**: Display of academic and professional publications
+- ✅ **Accessibility**: Skip navigation, ARIA labels, and semantic HTML
+- ✅ **Automated Deployment**: GitHub Actions CI/CD to GitHub Pages
+
 ## 🛠 Technology Stack
 
 - **Frontend Framework**: Next.js 14.2.7 with App Router
 - **Language**: TypeScript 5+ with strict type checking
-- **Styling**: Tailwind CSS 3.4+ with responsive utilities
-- **UI Library**: Radix UI primitives with Lucide React icons  
+- **Styling**: Tailwind CSS 3.4+ with responsive utilities and dark mode support
+- **UI Library**: Radix UI primitives with Lucide React icons
 - **Animation**: Framer Motion for smooth interactions
-- **Testing**: Playwright for comprehensive end-to-end testing
+- **PDF Generation**: jsPDF with html2canvas for client-side PDF export
 - **Deployment**: GitHub Pages with automated CI/CD pipeline
 - **Build System**: Static export optimized for GitHub Pages
 - **Data Processing**: Custom markdown parser with regex extraction
-- **Performance**: React optimizations with lazy loading
+- **Performance**: React optimizations with efficient rendering
 
-## 📁 Current Project Structure
+## 📁 Project Structure
 
 ```
 resume_md2website/
@@ -48,31 +60,31 @@ resume_md2website/
 │   │       └── page.tsx      # Projects showcase page
 │   ├── components/            # React component library
 │   │   ├── AboutSection.tsx  # About content with skills
-│   │   ├── ContactForm.tsx   # Contact form with validation
+│   │   ├── ContactForm.tsx   # Contact form (mailto integration)
 │   │   ├── ExperienceSection.tsx # Timeline with achievements
 │   │   ├── HeroSimple.tsx    # Hero/banner component
 │   │   ├── MarkdownText.tsx  # Safe HTML rendering
-│   │   ├── Nav.tsx           # Main navigation component
-│   │   ├── NavSimple.tsx     # Simplified navigation
+│   │   ├── NavSimple.tsx     # Main navigation with mobile menu
 │   │   ├── ProjectsSection.tsx # Projects with conditional buttons
 │   │   ├── PublicationsSection.tsx # Publications display
 │   │   ├── SkillsSection.tsx # Skills matrix component
 │   │   ├── SkipNavigation.tsx # Accessibility navigation
 │   │   ├── ThemeToggle.tsx   # Dark/light mode toggle
-│   │   ├── figma/            # Figma-generated components
+│   │   ├── figma/            # Figma-generated utilities
+│   │   │   └── ImageWithFallback.tsx
 │   │   └── ui/               # Radix UI component library
 │   ├── hooks/                # Custom React hooks
+│   │   └── useActiveSection.ts # Active section detection
 │   └── lib/                  # Core utilities and data processing
 │       ├── models.ts         # TypeScript interfaces
 │       ├── parseResumeMarkdown.ts # Core parsing engine
 │       ├── paths.ts          # Environment path utilities
 │       └── pdfGenerator.ts   # PDF export functionality
-├── docs/                     # Generated static build (GitHub Pages)
-├── out/                      # Next.js export output directory
+├── docs/                     # Static build output (GitHub Pages deployment)
 ├── next.config.js           # Next.js build configuration
 ├── package.json             # Dependencies and npm scripts
 ├── tailwind.config.js       # Tailwind CSS customization
-├── tsconfig.json            # TypeScript compiler configuration  
+├── tsconfig.json            # TypeScript compiler configuration
 ├── postcss.config.js        # PostCSS processing configuration
 ├── .gitignore               # Git ignore rules
 ├── .nojekyll                # GitHub Pages Jekyll bypass
@@ -104,7 +116,7 @@ interface Profile {
 
 interface ExperienceEntry {
   employer: string;      // Company name
-  title: string;         // Job title/position  
+  title: string;         // Job title/position
   timeframe: string;     // Employment duration
   location: string;      // Geographic location
   summary: string;       // Role overview
@@ -116,24 +128,41 @@ interface Project {
   description: string;   // Project description
   link?: string;        // Optional external link
 }
+
+interface Publication {
+  title: string;         // Publication title
+  authors?: string;      // Author list
+  venue?: string;        // Publication venue
+  year?: number;         // Publication year
+  link?: string;         // Optional external link
+  category?: string;     // Publication category
+}
 ```
 
 ### Component Architecture
 
-**Section-Based Components**: Each major content area is encapsulated in dedicated components:
+**Page Components**: Each route has dedicated page components:
+- `app/page.tsx` - Home page with all sections
+- `app/about/page.tsx` - Dedicated about page
+- `app/experience/page.tsx` - Professional experience page
+- `app/projects/page.tsx` - Projects showcase page
+
+**Section Components**: Major content areas are encapsulated in dedicated components:
 - `ExperienceSection.tsx` - Professional timeline with achievements
-- `ProjectsSection.tsx` - Project showcase with conditional buttons  
+- `ProjectsSection.tsx` - Project showcase with conditional buttons
 - `AboutSection.tsx` - Bio, skills, and contact information
 - `SkillsSection.tsx` - Skills matrix display
+- `PublicationsSection.tsx` - Publications with categorization
 
-**Navigation Components**:
-- `Nav.tsx` - Full-featured navigation with responsive design
-- `NavSimple.tsx` - Simplified navigation for specific pages
+**Layout Components**:
+- `NavSimple.tsx` - Responsive navigation with mobile hamburger menu and dark mode toggle
 - `SkipNavigation.tsx` - Accessibility-first skip-to-content
+- `HeroSimple.tsx` - Hero section with current role highlight
 
 **Utility Components**:
 - `MarkdownText.tsx` - Safe HTML rendering from parsed markdown
-- `HeroSimple.tsx` - Hero section with current role highlight
+- `ThemeToggle.tsx` - Dark/light mode toggle with system preference detection
+- `ContactForm.tsx` - Contact form with client-side mailto integration
 
 ## 📋 Resume Markdown Structure Requirements
 
@@ -153,7 +182,7 @@ The resume markdown file must follow this specific structure for optimal parsing
 ```markdown
 ## WORK EXPERIENCE
 
-**Company Name**  
+**Company Name**
 _**Position Title**_
 *Date Range | Location*
 
@@ -173,15 +202,26 @@ _**Second Position** (if multiple roles at same company)_
 - More accomplishments with **formatting**
 ```
 
-### Projects Section (Optional)
+### Projects Section
 ```markdown
 ## PROJECTS
 
-**[Project Name](https://project-link.com)**  
+**[Project Name](https://project-link.com)**
 - Project description with technologies used
 
 **Project Without Link**
 - Description for projects without external links
+```
+
+### Publications Section
+```markdown
+## PUBLICATIONS
+
+**[Publication Title](https://link-to-paper.com)**
+*Authors | Venue | Year*
+
+**Publication Without Link**
+*Authors | Venue | Year*
 ```
 
 ### Skills Section
@@ -199,7 +239,7 @@ _**Second Position** (if multiple roles at same company)_
 3. **Timeline Parsing**: Extracts from `*Date | Location*` format
 4. **Summary Recognition**: Identifies `**Summary:**` lines
 5. **Achievement Processing**: Handles multi-line bullet points
-6. **Link Extraction**: Processes markdown links in project titles
+6. **Link Extraction**: Processes markdown links in project and publication titles
 7. **Skills Categorization**: Parses skills by category from `**Category:**` format
 
 ## 🚀 Development Setup
@@ -237,12 +277,9 @@ npm run lint         # Run ESLint code analysis
 
 # Static Export (GitHub Pages)
 npm run export       # Build + copy to docs/ folder for GitHub Pages
-
-# Testing
-npm run test         # Run Playwright tests (if test files exist)
-npm run test:ui      # Interactive test runner
-npm run test:report  # Generate HTML test report
 ```
+
+**Note**: Playwright is installed for future testing implementation, but test files are not currently included in the repository.
 
 ## 📦 GitHub Actions Deployment
 
@@ -257,7 +294,7 @@ name: Deploy Next.js site to Pages
 
 on:
   push:
-    branches: ["main", "production-deploy"]  # Triggers on pushes to main/production-deploy
+    branches: ["main", "production-deploy"]  # Triggers on pushes to main
   workflow_dispatch:                         # Manual trigger support
 
 permissions:
@@ -272,7 +309,7 @@ concurrency:
 
 #### Build Process
 
-1. **Environment Setup**: 
+1. **Environment Setup**:
    - Ubuntu latest runner
    - Node.js 20.x with automatic package manager detection
    - Dependency caching for faster builds
@@ -280,8 +317,8 @@ concurrency:
 2. **Build Steps**:
    ```bash
    # Automatic dependency installation (npm ci)
-   # Next.js build with static export
-   # Artifact upload to GitHub Pages
+   # Next.js build with static export to 'out/' directory
+   # Artifact upload from 'out/' to GitHub Pages
    ```
 
 3. **Deployment**:
@@ -289,11 +326,11 @@ concurrency:
    - Automatic GitHub Pages environment configuration
    - Live URL: https://vibz28.github.io/resume_md2website
 
-#### Branch Protection Strategy
+#### Build Output Directories
 
-- **`main` branch**: Production deployments only
-- **Feature branches**: Development and testing
-- **`production-deploy` branch**: Staging deployments (builds but doesn't deploy)
+- **`out/`**: Temporary build output directory (generated during builds, gitignored)
+- **`docs/`**: Committed static files for reference (created via `npm run export`)
+- **GitHub Pages**: Deploys from the `out/` directory uploaded as an artifact
 
 ### Manual Deployment Process
 
@@ -340,7 +377,7 @@ const nextConfig = {
    ```bash
    # Check for TypeScript errors
    npm run build
-   
+
    # Fix linting issues
    npm run lint
    ```
@@ -362,7 +399,7 @@ const nextConfig = {
    ```bash
    # Open the markdown file
    code resume_vibhor_janey_updated_aug_2025.md
-   
+
    # Make your changes following the structure requirements
    ```
 
@@ -387,7 +424,7 @@ The `parseResumeMarkdown.ts` engine automatically:
 - **Extracts** company names, job titles, and employment timeframes
 - **Processes** markdown formatting (bold, italic, links)
 - **Generates** professional bio from current role summary
-- **Organizes** achievements into structured bullet points  
+- **Organizes** achievements into structured bullet points
 - **Creates** skills matrix from categorized skills
 - **Handles** multi-line content with proper formatting
 - **Provides** graceful fallbacks for missing data
@@ -407,6 +444,7 @@ The parser includes robust error handling:
 **Tailwind CSS Configuration** (`tailwind.config.js`):
 ```javascript
 module.exports = {
+  darkMode: 'class',  // Enable class-based dark mode
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -414,18 +452,18 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // Add custom colors, fonts, spacing
+      // Custom colors, fonts, spacing defined here
     },
   },
   plugins: [],
 }
 ```
 
-**Component Styling Patterns**:
-- **Navigation**: `bg-white border-b border-gray-200`
-- **Hero Section**: `bg-gradient-to-r from-blue-600 to-purple-600`
-- **Cards**: `bg-white rounded-lg shadow-sm hover:shadow-md`
-- **Buttons**: `bg-blue-600 hover:bg-blue-700 text-white rounded-md`
+**Dark Mode Implementation**:
+- Toggle component in navigation bar
+- System preference detection on first visit
+- localStorage persistence across sessions
+- CSS custom properties for theme colors
 
 ### Adding New Sections
 
@@ -434,7 +472,7 @@ module.exports = {
    interface NewSectionProps {
      data: YourDataType[];
    }
-   
+
    export default function NewSection({ data }: NewSectionProps) {
      return (
        <section className="py-16">
@@ -449,7 +487,7 @@ module.exports = {
    export interface YourDataType {
      // Define your data structure
    }
-   
+
    export interface ParsedContent {
      // Add your new section
      yourSection: YourDataType[];
@@ -464,55 +502,10 @@ module.exports = {
 4. **Add to Pages** (`src/app/page.tsx`):
    ```tsx
    import NewSection from '@/components/NewSection';
-   
+
    // Include in your page component
    <NewSection data={parsedContent.yourSection} />
    ```
-
-## 🧪 Testing Framework
-
-### Playwright Testing Suite
-
-The project includes comprehensive end-to-end testing with Playwright:
-
-```bash
-# Run all tests
-npm run test
-
-# Interactive test runner
-npm run test:ui
-
-# Generate HTML report
-npm run test:report
-```
-
-### Test Structure
-
-**Page Contract Tests** (if present):
-- `tests/contract/home.test.ts` - Home page functionality
-- `tests/contract/experience.test.ts` - Experience section validation
-- `tests/contract/projects.test.ts` - Project showcase testing
-- `tests/contract/navigation.test.ts` - Navigation consistency
-
-**Integration Tests**:
-- Content parsing accuracy
-- Cross-page navigation
-- Responsive design validation
-- Performance benchmarking
-
-### Adding New Tests
-
-```typescript
-// tests/your-feature.test.ts
-import { test, expect } from '@playwright/test';
-
-test('should display your feature correctly', async ({ page }) => {
-  await page.goto('/');
-  
-  // Test your feature
-  await expect(page.locator('[data-testid="your-feature"]')).toBeVisible();
-});
-```
 
 ## 📈 Performance Optimization
 
@@ -565,15 +558,14 @@ git push origin feature/your-feature-name
 
 - **TypeScript**: Strict mode enabled, proper type definitions required
 - **ESLint**: Follow Next.js recommended configuration
-- **Prettier**: Consistent code formatting (if configured)
-- **Testing**: Add tests for new features
+- **Accessibility**: WCAG 2.1 AA compliance guidelines
 - **Documentation**: Update README for significant changes
 
 ### Commit Message Convention
 
 ```bash
 feat: add new feature
-fix: resolve bug description  
+fix: resolve bug description
 docs: update documentation
 style: formatting changes
 refactor: code improvements
@@ -585,31 +577,29 @@ chore: maintenance tasks
 
 ### Planned Enhancements
 
-**Phase 1: Content Expansion**
-- [ ] Contact form with email integration
-- [ ] PDF resume download functionality
-- [ ] Publications section with filtering
+**Phase 1: Content & Analytics**
+- [ ] Server-side email integration for contact form (currently uses mailto)
+- [ ] Advanced filtering for publications section
 - [ ] Case studies with detailed project breakdowns
+- [ ] Analytics integration for visitor insights
 
-**Phase 2: User Experience**
-- [ ] Dark mode toggle with system preference detection
-- [ ] Mobile navigation hamburger menu
-- [ ] Search functionality across content
-- [ ] Performance optimizations (lazy loading, caching)
+**Phase 2: Developer Experience**
+- [ ] Comprehensive test suite with Playwright
+- [ ] Component documentation with Storybook
+- [ ] Automated accessibility testing
+- [ ] Performance benchmarking
 
 **Phase 3: Advanced Features**
 - [ ] CMS integration for non-technical updates
-- [ ] Analytics dashboard for visitor insights
 - [ ] Multi-language support (i18n)
-- [ ] SEO enhancements with structured data
+- [ ] Advanced SEO enhancements with structured data
+- [ ] Blog section for articles and insights
 
-### Technical Debt
+### Known Limitations
 
-- [ ] Complete mobile navigation implementation
-- [ ] Accessibility audit (WCAG 2.1 AA compliance)
-- [ ] Performance optimization (target Lighthouse >95)
-- [ ] Test coverage expansion
-- [ ] Component documentation with Storybook
+- **Contact Form**: Uses mailto links (client-side) instead of server-side email integration
+- **Testing**: Playwright is installed but test suite not yet implemented
+- **Publications Filtering**: Display works but advanced filtering not implemented
 
 ## 📄 License
 
@@ -617,7 +607,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Usage Rights:**
 - ✅ Commercial and personal use
-- ✅ Modification and distribution  
+- ✅ Modification and distribution
 - ✅ Private use
 - ❌ Liability or warranty
 
@@ -632,17 +622,17 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 👨‍💼 About the Author
 
-**Built by [Vibhor Janey](https://www.linkedin.com/in/vibhorjaney/)**  
+**Built by [Vibhor Janey](https://www.linkedin.com/in/vibhorjaney/)**
 *Senior Manager, AI Solution Architect @ Bristol Myers Squibb*
 
-**Expertise:**  
+**Expertise:**
 AI solution architecture, manufacturing operations optimization, agentic orchestration systems, and enterprise data architecture.
 
-**Contact:**  
+**Contact:**
 - 📧 [vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com)
 - 💼 [LinkedIn](https://www.linkedin.com/in/vibhorjaney/)
 - 🌐 [Portfolio](https://vibz28.github.io/resume_md2website)
 
 ---
 
-*This README provides comprehensive documentation for the current platform. For questions, issues, or contributions, please use the GitHub repository's issue tracker.*
+*Last Updated: January 2025*
