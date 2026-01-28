@@ -60,11 +60,14 @@ export function PublicationsSection({ publications }: PublicationsSectionProps) 
   }
 
   return (
-    <section id="publications" className="py-16 bg-background">
+    <section id="publications" className="py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl text-center mb-12">
-          Publications & Research
-        </h2>
+        <div className="text-center mb-12">
+          <div className="section-kicker text-muted-foreground mb-3">Research</div>
+          <h2 className="section-title text-3xl sm:text-4xl">
+            Publications & Research
+          </h2>
+        </div>
 
         {/* Sort Controls */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
@@ -75,7 +78,7 @@ export function PublicationsSection({ publications }: PublicationsSectionProps) 
             id="publication-sort"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as PublicationSortBy)}
-            className="px-4 py-2 border border-input rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring bg-background text-foreground"
+            className="px-4 py-2 border-2 border-input rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring bg-background text-foreground"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -87,7 +90,7 @@ export function PublicationsSection({ publications }: PublicationsSectionProps) 
         {sortedPublications.length > 0 ? (
           <div className="space-y-6">
             {sortedPublications.map((publication, index) => (
-              <article key={index} className="publication-item bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
+              <article key={index} className="publication-item card-surface border-2 rounded-2xl p-6 hover:-translate-y-0.5 transition-transform">
                 <h3 className="text-xl font-semibold text-card-foreground mb-3 leading-tight">
                   {publication.title}
                 </h3>

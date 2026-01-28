@@ -104,8 +104,9 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
     : enhancedProjects.filter((project: EnhancedProject) => project.category === selectedCategory);
 
   return (
-    <section id="projects" className="py-20 bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className="py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none" />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -113,7 +114,8 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
+          <div className="section-kicker text-muted-foreground mb-3">Selected Work</div>
+          <h2 className="section-title text-3xl md:text-4xl mb-4">Featured Projects</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             A showcase of AI solutions I've built, from research prototypes to production systems
           </p>
@@ -133,7 +135,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
               variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedCategory(category)}
-              className="transition-all duration-200"
+              className="transition-all duration-200 rounded-full border-2"
             >
               {category}
             </Button>
@@ -151,20 +153,21 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
               viewport={{ once: true }}
               className="group"
             >
-              <Card className="h-full overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20">
+              <Card className="h-full overflow-hidden transition-all duration-300 border-2 hover:border-primary/30 card-surface hover:-translate-y-1">
                 <div className="relative overflow-hidden">
                   <ImageWithFallback
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm">
+                    <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm pill">
                       {project.category}
                     </Badge>
                     <Badge 
                       variant={project.status === "Production" ? "default" : project.status === "Beta" ? "secondary" : "outline"}
-                      className="bg-background/80 backdrop-blur-sm"
+                      className="bg-background/80 backdrop-blur-sm pill"
                     >
                       {project.status}
                     </Badge>
@@ -187,7 +190,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         <h4 className="font-semibold text-sm mb-2">Key Metrics:</h4>
                         <div className="flex flex-wrap gap-1">
                           {project.metrics.map((metric: string) => (
-                            <Badge key={metric} variant="outline" className="text-xs">
+                            <Badge key={metric} variant="outline" className="text-xs pill border border-foreground/20">
                               {metric}
                             </Badge>
                           ))}
@@ -198,12 +201,12 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         <h4 className="font-semibold text-sm mb-2">Technologies:</h4>
                         <div className="flex flex-wrap gap-1">
                           {project.technologies.slice(0, 4).map((tech: string) => (
-                            <Badge key={tech} variant="secondary" className="text-xs">
+                            <Badge key={tech} variant="secondary" className="text-xs pill bg-secondary text-secondary-foreground">
                               {tech}
                             </Badge>
                           ))}
                           {project.technologies.length > 4 && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-xs pill bg-secondary text-secondary-foreground">
                               +{project.technologies.length - 4} more
                             </Badge>
                           )}
@@ -216,7 +219,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          className="flex-1"
+                          className="flex-1 rounded-full border-2"
                           onClick={() => window.open(project.links.github!, '_blank')}
                         >
                           <Github className="mr-2 h-4 w-4" />
@@ -227,7 +230,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         <Button 
                           size="sm" 
                           variant="outline" 
-                          className="flex-1"
+                          className="flex-1 rounded-full border-2"
                           onClick={() => window.open(project.links.demo!, '_blank')}
                         >
                           <Play className="mr-2 h-4 w-4" />
@@ -238,7 +241,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         <Button 
                           size="sm" 
                           variant="default" 
-                          className="flex-1"
+                          className="flex-1 btn-spark text-white"
                           onClick={() => window.open(project.links.paper!, '_blank')}
                         >
                           <ExternalLink className="mr-2 h-4 w-4" />

@@ -39,7 +39,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className="rounded-full"
+        className="rounded-full border-2 border-foreground/10"
         disabled
       >
         <Sun className="h-5 w-5" />
@@ -52,7 +52,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={() => setTheme(prev => (prev === 'light' ? 'dark' : 'light'))}
-      className="rounded-full"
+      className="rounded-full border-2 border-foreground/10 hover:border-foreground"
       aria-label="Toggle theme"
     >
       {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}

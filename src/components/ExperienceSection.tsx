@@ -69,7 +69,7 @@ export function ExperienceSection() {
   ];
 
   return (
-    <section id="experience" className="py-20">
+    <section id="experience" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -78,7 +78,8 @@ export function ExperienceSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience</h2>
+          <div className="section-kicker text-muted-foreground mb-3">Career Timeline</div>
+          <h2 className="section-title text-3xl md:text-4xl mb-4">Experience</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             My journey through the AI industry, from research to production-scale implementations
           </p>
@@ -86,7 +87,7 @@ export function ExperienceSection() {
 
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border transform md:-translate-x-0.5"></div>
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border/70 transform md:-translate-x-0.5"></div>
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
@@ -101,17 +102,17 @@ export function ExperienceSection() {
                 }`}
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-primary rounded-full transform -translate-x-2 md:-translate-x-2 border-4 border-background z-10"></div>
+                <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-primary rounded-full transform -translate-x-2 md:-translate-x-2 border-4 border-background z-10 shadow-[0_0_0_6px_hsl(var(--primary)/0.15)]"></div>
 
                 {/* Content */}
                 <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                  <Card className="p-6 hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
+                  <Card className="p-6 transition-all duration-300 border-2 hover:border-primary/40 card-surface hover:-translate-y-1">
                     <CardContent className="p-0 space-y-4">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="h-4 w-4" />
                           <span>{exp.duration}</span>
-                          <Badge variant="outline" className="ml-2">{exp.type}</Badge>
+                          <Badge variant="outline" className="ml-2 pill border border-foreground/20">{exp.type}</Badge>
                         </div>
                         
                         <h3 className="text-xl font-bold text-primary">{exp.title}</h3>
@@ -145,7 +146,7 @@ export function ExperienceSection() {
                         <h4 className="font-semibold">Technologies:</h4>
                         <div className="flex flex-wrap gap-2">
                           {exp.technologies.map((tech) => (
-                            <Badge key={tech} variant="secondary" className="text-xs">
+                            <Badge key={tech} variant="secondary" className="text-xs pill bg-secondary text-secondary-foreground">
                               {tech}
                             </Badge>
                           ))}

@@ -10,7 +10,7 @@ export default function AboutPage() {
   const { profile } = parseResumeMarkdown();
 
   return (
-    <div className="bg-white">
+    <div className="bg-background text-foreground">
       <AboutSection profile={profile} isStandalone={true} />
     </div>
   );

@@ -90,7 +90,7 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-20 bg-muted/30">
+    <section id="contact" className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -99,7 +99,8 @@ export function ContactForm() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
+          <div className="section-kicker text-muted-foreground mb-3">Say Hello</div>
+          <h2 className="section-title text-3xl md:text-4xl mb-4">Get In Touch</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Let's discuss AI opportunities, research collaborations, or potential projects. 
             I'm always excited to connect with fellow innovators and problem solvers.
@@ -136,9 +137,9 @@ export function ContactForm() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     viewport={{ once: true }}
-                    className="flex items-center space-x-4 p-4 rounded-lg hover:bg-accent transition-colors group"
+                    className="flex items-center space-x-4 p-4 rounded-2xl card-surface transition-colors group hover:-translate-y-0.5"
                   >
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -166,7 +167,7 @@ export function ContactForm() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.1, duration: 0.4 }}
                       viewport={{ once: true }}
-                      className={`w-12 h-12 bg-accent rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110 ${social.color}`}
+                      className={`w-12 h-12 bg-accent rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 ${social.color}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -184,14 +185,14 @@ export function ContactForm() {
               transition={{ delay: 0.3, duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <Card className="p-4 bg-gradient-to-r from-emerald-50 to-slate-50 dark:from-emerald-950/20 dark:to-slate-950/20 border-2 border-emerald-200/50 dark:border-emerald-800/50">
+              <Card className="p-4 bg-gradient-to-r from-secondary to-accent border-2 border-foreground/10 card-surface">
                 <CardContent className="p-0 flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center">
                     <Calendar className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <div className="font-medium text-emerald-700 dark:text-emerald-300">Available for New Projects</div>
-                    <div className="text-sm text-emerald-600 dark:text-emerald-400">
+                    <div className="font-medium">Available for New Projects</div>
+                    <div className="text-sm text-muted-foreground">
                       Currently accepting consulting opportunities and research collaborations
                     </div>
                   </div>
@@ -207,7 +208,7 @@ export function ContactForm() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Card className="p-6 hover:shadow-lg transition-shadow duration-300 border-2">
+            <Card className="p-6 transition-shadow duration-300 border-2 card-surface">
               <CardContent className="p-0">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -269,7 +270,7 @@ export function ContactForm() {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full bg-gradient-to-r from-slate-600 to-emerald-600 hover:from-slate-700 hover:to-emerald-700"
+                    className="w-full btn-spark text-white"
                   >
                     <Send className="mr-2 h-4 w-4" />
                     Send Message

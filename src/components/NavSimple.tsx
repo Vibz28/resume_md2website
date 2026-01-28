@@ -39,7 +39,7 @@ export function NavSimple() {
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm'
+          ? 'bg-background/85 backdrop-blur-md border-b border-border shadow-sm'
           : 'bg-transparent'
       }`}
     >
@@ -47,8 +47,14 @@ export function NavSimple() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-green-600 bg-clip-text text-transparent">
-              VJ
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full border-2 border-foreground bg-background shadow-sm grid place-items-center font-display text-lg">
+                VJ
+              </div>
+              <div className="hidden sm:block leading-tight">
+                <div className="font-display text-lg">Vibhor Janey</div>
+                <div className="text-xs text-muted-foreground tracking-[0.2em] uppercase">AI Architect</div>
+              </div>
             </div>
           </div>
 
@@ -58,7 +64,7 @@ export function NavSimple() {
               <button
                 key={item.name}
                 onClick={() => handleNavClick(item.href)}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium uppercase tracking-[0.15em] text-xs"
               >
                 {item.name}
               </button>
@@ -68,7 +74,7 @@ export function NavSimple() {
               <ThemeToggle />
               <Button 
                 size="sm" 
-                className="bg-teal-600 hover:bg-teal-700 text-white"
+                className="btn-spark text-white"
                 onClick={downloadResumePDF}
               >
                 <Download className="mr-2 h-4 w-4" />
@@ -103,7 +109,7 @@ export function NavSimple() {
             <button
               key={item.name}
               onClick={() => handleNavClick(item.href)}
-              className="block w-full text-left px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+              className="block w-full text-left px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors uppercase tracking-[0.2em]"
             >
               {item.name}
             </button>
@@ -111,7 +117,7 @@ export function NavSimple() {
           
           <div className="pt-4 pb-2">
             <Button 
-              className="w-full bg-teal-600 hover:bg-teal-700 text-white mb-3"
+              className="w-full btn-spark text-white mb-3"
               onClick={downloadResumePDF}
             >
               <Download className="mr-2 h-4 w-4" />

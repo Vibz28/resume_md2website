@@ -17,14 +17,15 @@ export default function Home() {
 
       {/* Current Role Section */}
       {experience.length > 0 && (
-        <section className="py-16 bg-muted/30">
+        <section className="py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              <div className="section-kicker text-muted-foreground mb-3">Now</div>
+              <h2 className="section-title text-3xl sm:text-4xl">
                 Current Role
               </h2>
               <div className="mt-6 max-w-2xl mx-auto">
-                <h3 className="text-xl font-semibold text-teal-600 dark:text-teal-400">
+                <h3 className="text-xl font-semibold text-primary">
                   {experience[0].title}
                 </h3>
                 <p className="text-lg text-muted-foreground mt-2">
@@ -38,7 +39,7 @@ export default function Home() {
                 <div className="mt-6">
                   <a
                     href="#experience"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+                    className="inline-flex items-center px-5 py-2 text-sm font-medium rounded-full btn-spark text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
                   >
                     View Full Experience
                   </a>

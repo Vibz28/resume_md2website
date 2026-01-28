@@ -23,27 +23,33 @@ export function SkillsSection({ isStandalone = false }: SkillsSectionProps) {
   ];
 
   return (
-    <section id="skills" className="py-16 bg-background" aria-labelledby="skills-heading">
+    <section id="skills" className="py-24" aria-labelledby="skills-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {isStandalone ? (
-          <h1 id="skills-heading" className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-8 text-center">
-            Skills & Expertise
-          </h1>
+          <div className="text-center mb-10">
+            <div className="section-kicker text-muted-foreground mb-3">Toolbox</div>
+            <h1 id="skills-heading" className="section-title text-3xl sm:text-4xl">
+              Skills & Expertise
+            </h1>
+          </div>
         ) : (
-          <h2 id="skills-heading" className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-8 text-center">
-            Skills & Expertise
-          </h2>
+          <div className="text-center mb-10">
+            <div className="section-kicker text-muted-foreground mb-3">Toolbox</div>
+            <h2 id="skills-heading" className="section-title text-3xl sm:text-4xl">
+              Skills & Expertise
+            </h2>
+          </div>
         )}
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {skillCategories.map((category, index) => (
-            <div key={index} className="bg-card rounded-lg p-6 shadow-sm border">
+            <div key={index} className="card-surface rounded-3xl p-6 border-2 hover:border-primary/40 transition-transform duration-300 hover:-translate-y-1">
               <h3 className="text-xl font-semibold text-card-foreground mb-4">{category.category}</h3>
               <div className="flex flex-wrap gap-2">
                 {category.skills.map((skill, skillIndex) => (
                   <span 
                     key={skillIndex}
-                    className="inline-block bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 px-3 py-1 rounded-full text-sm font-medium"
+                    className="pill bg-secondary text-secondary-foreground"
                   >
                     {skill}
                   </span>

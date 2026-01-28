@@ -12,11 +12,12 @@ export function HeroSimple() {
   };
 
   return (
-    <section className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background to-blue-50/30 dark:to-blue-950/20">
+    <section className="min-h-screen relative overflow-hidden grain">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-r from-teal-400/20 to-green-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-r from-green-400/20 to-teal-600/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute inset-0 bg-grid opacity-50" />
+        <div className="absolute -top-32 -right-24 w-[30rem] h-[30rem] bg-[radial-gradient(circle_at_center,hsl(var(--accent-rose)/0.45),transparent_60%)] blur-2xl animate-pulse" />
+        <div className="absolute -bottom-32 -left-24 w-[28rem] h-[28rem] bg-[radial-gradient(circle_at_center,hsl(var(--accent-sky)/0.45),transparent_60%)] blur-2xl animate-pulse" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
@@ -24,14 +25,17 @@ export function HeroSimple() {
           {/* Left Column - Text Content */}
           <div className="space-y-8">
             <div>
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+              <div className="flex flex-wrap items-center gap-3 mb-6">
+                <span className="sticker">Available for collaborations</span>
+                <span className="pill bg-secondary text-secondary-foreground">5,000+ users impacted</span>
+                <span className="pill bg-accent text-accent-foreground">Manufacturing + Healthcare</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl hero-title leading-tight">
                 <span className="text-foreground">Hi, I'm</span>{' '}
-                <span className="text-teal-600 dark:text-teal-400">
-                  Vibhor Janey
-                </span>
+                <span className="text-primary">Vibhor Janey</span>
               </h1>
-              
-              <h2 className="text-xl md:text-2xl text-muted-foreground mt-4">
+
+              <h2 className="text-xl md:text-2xl text-muted-foreground mt-4 max-w-xl">
                 AI Solution Architect • Data Architecture Leader • Machine Learning Specialist
               </h2>
             </div>
@@ -45,13 +49,13 @@ export function HeroSimple() {
             <div className="flex flex-wrap gap-4">
               <Button 
                 size="lg" 
-                className="bg-teal-600 hover:bg-teal-700 text-white"
+                className="btn-spark text-white"
                 onClick={downloadResumePDF}
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download Resume
               </Button>
-              <Button variant="outline" size="lg" onClick={scrollToAbout}>
+              <Button variant="outline" size="lg" onClick={scrollToAbout} className="btn-ghostline">
                 View My Work
               </Button>
             </div>
@@ -60,7 +64,7 @@ export function HeroSimple() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-teal-100 dark:hover:bg-teal-900"
+                className="rounded-full border-2 border-foreground/10 hover:border-foreground"
                 asChild
               >
                 <a href="https://github.com/Vibz28" target="_blank" rel="noopener noreferrer">
@@ -70,7 +74,7 @@ export function HeroSimple() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-teal-100 dark:hover:bg-teal-900"
+                className="rounded-full border-2 border-foreground/10 hover:border-foreground"
                 asChild
               >
                 <a href="https://www.linkedin.com/in/vibhorjaney/" target="_blank" rel="noopener noreferrer">
@@ -80,7 +84,7 @@ export function HeroSimple() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="rounded-full hover:bg-teal-100 dark:hover:bg-teal-900"
+                className="rounded-full border-2 border-foreground/10 hover:border-foreground"
                 asChild
               >
                 <a href="mailto:vibhor.janey@gmail.com">
@@ -93,16 +97,23 @@ export function HeroSimple() {
           {/* Right Column - Visual */}
           <div className="relative">
             <div className="relative mx-auto w-80 h-80 lg:w-96 lg:h-96">
-              {/* Floating elements around the main area */}
-              <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-r from-teal-500 to-green-500 rounded-xl opacity-20 blur-sm animate-bounce" />
-              <div className="absolute -bottom-4 -right-4 w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full opacity-20 blur-sm animate-bounce" />
-              
-              <div className="relative z-10 w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-teal-100 to-green-100 dark:from-teal-900/20 dark:to-green-900/20 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+              {/* Orbiting accents */}
+              <div className="absolute inset-0 rounded-full glow-ring animate-[spin_22s_linear_infinite]" />
+              <div className="absolute left-1/2 top-1/2 h-4 w-4 bg-primary rounded-full animate-[orbit_12s_linear_infinite]" />
+              <div className="absolute left-1/2 top-1/2 h-3 w-3 bg-[hsl(var(--accent-rose))] rounded-full animate-[orbit_9s_linear_infinite]" />
+              <div className="absolute -top-4 left-6 h-14 w-14 rounded-2xl bg-[hsl(var(--accent-sky))] opacity-70 animate-[float-slow_6s_ease-in-out_infinite]" />
+              <div className="absolute bottom-6 -right-2 h-10 w-10 rounded-full bg-[hsl(var(--accent-lime))] opacity-70 animate-[float-slow_5s_ease-in-out_infinite]" />
+
+              <div className="relative z-10 w-full h-full rounded-[2rem] overflow-hidden card-surface flex items-center justify-center border-2 border-foreground/10">
                 <div className="text-center p-8">
-                  <div className="w-32 h-32 mx-auto bg-gradient-to-r from-teal-500 to-green-500 rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4">
+                  <div className="w-32 h-32 mx-auto bg-[conic-gradient(from_180deg,hsl(var(--accent-rose)),hsl(var(--primary)),hsl(var(--accent-sky)))] rounded-full flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-lg">
                     VJ
                   </div>
                   <p className="text-muted-foreground">AI Solutions Architect</p>
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    <span className="pill bg-secondary text-secondary-foreground">Agentic Systems</span>
+                    <span className="pill bg-accent text-accent-foreground">Data Products</span>
+                  </div>
                 </div>
               </div>
             </div>
