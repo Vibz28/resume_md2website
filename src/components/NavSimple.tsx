@@ -57,7 +57,7 @@ export function NavSimple() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-charcoal/90 backdrop-blur-md border-b border-border/50'
+            ? 'bg-background/90 backdrop-blur-md border-b border-border/50'
             : 'bg-transparent'
         }`}
       >
@@ -142,7 +142,7 @@ export function NavSimple() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 md:hidden"
           >
-            <div className="absolute inset-0 bg-charcoal/95 backdrop-blur-lg" onClick={() => setIsOpen(false)} />
+            <div className="absolute inset-0 bg-background/95 backdrop-blur-lg" onClick={() => setIsOpen(false)} />
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}

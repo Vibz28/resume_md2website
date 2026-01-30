@@ -15,13 +15,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-charcoal text-foreground antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <SkipNavigation />
         <header>
           <NavSimple />
         </header>
         <main id="main-content" role="main">{children}</main>
-        <footer className="border-t border-border bg-charcoal-light" role="contentinfo">
+        <footer className="border-t border-border bg-muted/30" role="contentinfo">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-sm text-muted-foreground font-mono">

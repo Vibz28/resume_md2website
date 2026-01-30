@@ -48,10 +48,10 @@ export function HeroSimple() {
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-charcoal"
+      className="relative min-h-screen overflow-hidden bg-background"
     >
       {/* Animated Background Grid */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-50" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-30 dark:opacity-50" />
       
       {/* Floating Geometric Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

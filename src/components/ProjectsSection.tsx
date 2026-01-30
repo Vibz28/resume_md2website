@@ -108,7 +108,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
   };
 
   return (
-    <section id="projects" className="py-24 bg-charcoal-light relative">
+    <section id="projects" className="py-24 bg-muted/30 relative">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

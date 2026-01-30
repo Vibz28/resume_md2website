@@ -87,9 +87,9 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-charcoal relative">
+    <section id="contact" className="py-24 bg-background relative">
       {/* Background */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-20" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 dark:opacity-20" />
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

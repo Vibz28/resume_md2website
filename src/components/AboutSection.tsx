@@ -28,9 +28,9 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
   };
 
   return (
-    <section id="about" className="py-24 bg-charcoal relative overflow-hidden">
+    <section id="about" className="py-24 bg-background relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern-dense opacity-30" />
+      <div className="absolute inset-0 bg-grid-pattern-dense opacity-20 dark:opacity-30" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
