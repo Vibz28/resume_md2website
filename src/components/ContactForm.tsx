@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Github, Linkedin, Send, MessageSquare, ArrowUpRight } from 'lucide-react';
+import { Mail, MapPin, Phone, Github, Linkedin, Send, MessageSquare, ArrowUpRight, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 
 export function ContactForm() {
@@ -62,6 +62,8 @@ export function ContactForm() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const [copied, setCopied] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
@@ -76,6 +78,12 @@ export function ContactForm() {
     mailtoLink.click();
     
     setFormData({ name: '', email: '', subject: '', message: '' });
+  };
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText('vibhor.janey@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -145,6 +153,25 @@ export function ContactForm() {
                   </motion.a>
                 );
               })}
+            </div>
+
+            {/* Copy Email Button */}
+            <div className="p-4 rounded-xl bg-muted/50 border border-border/30">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Prefer to copy email?</p>
+                  <p className="font-mono text-sm">vibhor.janey@gmail.com</p>
+                </div>
+                <motion.button
+                  onClick={copyEmail}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 px-4 py-2 bg-card border border-border/50 rounded-lg hover:border-primary/30 transition-colors"
+                >
+                  {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                  <span className="text-sm">{copied ? 'Copied!' : 'Copy'}</span>
+                </motion.button>
+              </div>
             </div>
 
             {/* Social Links */}
@@ -268,6 +295,10 @@ export function ContactForm() {
                   <Send className="w-5 h-5" />
                   Send Message
                 </motion.button>
+
+                <p className="text-center text-xs text-muted-foreground">
+                  Opens your default email client (Gmail, Outlook, etc.) with pre-filled message
+                </p>
               </form>
             </div>
           </motion.div>
