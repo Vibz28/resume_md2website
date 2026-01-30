@@ -92,7 +92,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
         if (!line) continue; // Skip empty lines
         
         // Check if this is a position title line (format: _**Title**_)
-        if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
+        if (line.match(/^ _\*\*([^*]+)\*\*_$/)) {
           // Save previous position if exists and is valid
           if (currentPosition && isValidPosition(currentPosition, bulletPoints)) {
             currentPosition.achievements = bulletPoints
@@ -103,7 +103,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
           
           // Start new position
-          const titleMatch = line.match(/^_\*\*([^*]+)\*\*_$/);
+          const titleMatch = line.match(/^ _\*\*([^*]+)\*\*_$/);
           if (titleMatch && titleMatch[1]?.trim()) {
             currentPosition = {
               employer,
@@ -152,7 +152,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
             
             // Stop if we hit another bullet point or section marker
             if (nextLine.startsWith('- ') || 
-                nextLine.match(/^_\*\*([^*]+)\*\*_$/) ||
+                nextLine.match(/^ _\*\*([^*]+)\*\*_$/) ||
                 nextLine.match(/^\*([^*]+)\*$/) ||
                 nextLine.match(/^\*\*Summary:\*\*/)) {
               break;
@@ -239,24 +239,39 @@ function isValidTimeframe(timeframe: string): boolean {
 function parseProjects(content: string): Project[] {
   const projects: Project[] = [];
   
-  const projectsSection = content.match(/## PROJECTS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const projectsSection = content.match(/## PROJECTS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
   if (!projectsSection) return projects;
   
   const projectText = projectsSection[1];
   
-  // Look for **[Title](Link)** pattern
-  const projectMatches = projectText.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*\s*\n-\s*([^\n]+)/g);
+  // Split by double newlines to get individual project blocks
+  const projectBlocks = projectText.split(/\n\n+/).filter(block => block.trim());
   
-  if (projectMatches) {
-    for (const match of projectMatches) {
-      const parsed = match.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*\s*\n-\s*([^\n]+)/);
-      if (parsed) {
-        projects.push({
-          title: parsed[1].trim(),
-          description: parsed[3].trim(),
-          link: parsed[2].trim()
-        });
+  for (const block of projectBlocks) {
+    // Match **[Title](Link)** pattern
+    const titleMatch = block.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/);
+    if (!titleMatch) continue;
+    
+    const title = titleMatch[1].trim();
+    const link = titleMatch[2].trim();
+    
+    // Get description - lines starting with -
+    const lines = block.split('\n');
+    let description = '';
+    
+    for (const line of lines) {
+      if (line.trim().startsWith('- ')) {
+        description = line.trim().substring(2).trim();
+        break;
       }
+    }
+    
+    if (title && description) {
+      projects.push({
+        title,
+        description,
+        link
+      });
     }
   }
   
@@ -266,7 +281,7 @@ function parseProjects(content: string): Project[] {
 function parseSkills(content: string): string[] {
   const skills: string[] = [];
   
-  const skillsSection = content.match(/## SKILLS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const skillsSection = content.match(/## SKILLS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
   if (!skillsSection) return skills;
   
   const skillsText = skillsSection[1];
@@ -286,7 +301,7 @@ function parseSkills(content: string): string[] {
 function parsePublications(content: string): Publication[] {
   const publications: Publication[] = [];
   
-  const publicationsSection = content.match(/## PUBLICATIONS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const publicationsSection = content.match(/## PUBLICATIONS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
   if (!publicationsSection) return publications;
   
   const publicationsText = publicationsSection[1];
