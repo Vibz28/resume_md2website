@@ -71,12 +71,12 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 ## SKILLS
 
-**Architectures:** Agentic Orchestration, Graph-based Workflows, Deep Agents, MCP Tool Declarations, RAG, Graph RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation
-**LLMOps:** Prompt Versioning, Thread Tracing, Quality Metrics, Evaluators, LLM-as-a-judge, LangSmith, ClickHouse
-**Data and Knowledge:** Semantic Knowledge Bases, Decision-logic Capture (Mermaid), Vector Indexing, Document Lineage, Text-to-SQL
-**Cloud DevOps:** AWS Bedrock, AWS SageMaker AI, AWS ECS Fargate, AWS Neptune, AWS Neptune Analytics, AWS S3, AWS Athena, AWS Glue, IAM, Postgres, Redis, DynamoDB
+**Agentic Architecture:** Agentic Orchestration, Graph-based Workflows, Deep Agents, MCP Tool Declarations, Retrieval Augmented Generation (RAG), Graph RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation
 **Programming:** Python, LangGraph, LangChain, NumPy, Pandas, scikit-learn, Pydantic, FastAPI, Matplotlib, boto3, Streamlit, SQL, React
+**Cloud DevOps:** AWS Bedrock, AWS SageMaker AI, AWS ECS Fargate, Docker, Kubernetes, AWS Lambda, AWS Neptune, AWS Neptune Analytics, AWS S3, AWS Athena, AWS Glue, AWS ALB, Postgres, Redis, DynamoDB
+**Data Architecture and Knowledge Management:** Semantic Knowledge Bases, Semantic Indexing, BM25 Keyword Search, Process Knowledge Graphs, Document Lineage, Text-to-SQL, Decision-logic Capture, SAP S/4HANA, Manufacturing Execution System (MES), Veeva QMS
 **ML/Analytics:** Data Modeling, Statistical Modeling, ML, Deep Learning, Graph Analytics, NLP, Computer Vision, Time-series Analysis
+**LLMOps:** Prompt Versioning, Thread Tracing, Quality Metrics, Evaluators, LLM-as-a-judge, LangSmith, ClickHouse
 
 ---
 

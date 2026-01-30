@@ -33,6 +33,13 @@ const projectMetadata: Record<string, Partial<EnhancedProject>> = {
     metrics: ["5,000+ users", "Agentic orchestration", "GxP compliance"],
     image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
   },
+  "Deviation Assistant": {
+    category: "Manufacturing AI",
+    status: "Production" as const,
+    technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP", "Graph Workflows"],
+    metrics: ["5,000+ users", "Agentic orchestration", "GxP compliance"],
+    image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
   "Batch Genealogy": {
     category: "Data Architecture",
     status: "Production" as const,
@@ -222,7 +229,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                       <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                         {project.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm line-clamp-2">
+                      <p className="text-muted-foreground text-sm">
                         {project.description}
                       </p>
                     </div>

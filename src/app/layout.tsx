@@ -32,7 +32,7 @@ export default function RootLayout({
                 <span className="text-primary">&gt;</span> vibhor.janey@gmail.com
               </p>
               <p className="text-sm text-muted-foreground">
-                © 2025 Vibhor Janey. Built with precision.
+                © 2026 Vibhor Janey
               </p>
             </div>
           </div>
