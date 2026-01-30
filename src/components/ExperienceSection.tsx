@@ -88,7 +88,7 @@ export function ExperienceSection() {
   };
 
   return (
-    <section id="experience" className="py-24 bg-muted/30 relative">
+    <section id="experience" className="py-24 bg-background relative">
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
       
