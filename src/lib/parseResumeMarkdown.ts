@@ -295,9 +295,9 @@ function parseSkills(content: string): { allSkills: string[]; categories: Array<
       // Get content after colon and split by comma
       const skillsContent = line.substring(colonIndex + 1).trim();
       const skillsInLine = skillsContent.split(',');
-      // Filter out empty strings and trim each skill
+      // Filter out empty strings, trim, and remove any "**" markdown formatting
       const categorySkills = skillsInLine
-        .map(s => s.trim())
+        .map(s => s.trim().replace(/^\*\*\s*/, '').replace(/\*\*$/, ''))
         .filter(s => s && s.length > 0);
       
       if (categoryName && categorySkills.length > 0) {

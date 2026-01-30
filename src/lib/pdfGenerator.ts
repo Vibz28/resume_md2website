@@ -278,125 +278,150 @@ function getFallbackResumeData(): ParsedContent {
   return {
     profile: {
       name: 'Vibhor Janey',
-      title: 'Full Stack Developer',
-      headline: 'Building scalable web applications with modern technologies',
-      bio: 'Experienced full-stack developer passionate about creating efficient, user-friendly applications. Specialized in React, Node.js, and cloud technologies.',
-      skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'GraphQL', 'PostgreSQL', 'MongoDB'],
+      title: 'AI Solution Architect',
+      headline: 'Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.',
+      bio: 'AI Solution Architect with 6+ years of experience delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare. Specialized in LLMOps, computer vision, and data architecture.',
+      skills: ['Python', 'LangGraph', 'LangChain', 'AWS Bedrock', 'AWS SageMaker', 'TensorFlow', 'Computer Vision', 'LLMOps', 'Agentic Orchestration', 'RAG', 'Graph RAG'],
       skillCategories: [
         {
-          category: 'Frontend',
-          skills: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Redux', 'HTML/CSS']
+          category: 'Architectures',
+          skills: ['Agentic Orchestration', 'Graph-based Workflows', 'Deep Agents', 'MCP Tool Declarations', 'RAG', 'Graph RAG', 'Event-driven Pipelines', 'HITL Review', 'RCA/CAPA Automation', 'GxP Validation']
         },
         {
-          category: 'Backend',
-          skills: ['Node.js', 'Python', 'Express', 'FastAPI', 'GraphQL', 'REST APIs']
+          category: 'LLMOps',
+          skills: ['Prompt Versioning', 'Thread Tracing', 'Quality Metrics', 'Evaluators', 'LLM-as-a-judge', 'LangSmith', 'ClickHouse']
         },
         {
-          category: 'Cloud & DevOps',
-          skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform', 'GitHub Actions']
+          category: 'Data and Knowledge',
+          skills: ['Semantic Knowledge Bases', 'Decision-logic Capture (Mermaid)', 'Vector Indexing', 'Document Lineage', 'Text-to-SQL']
         },
         {
-          category: 'Databases',
-          skills: ['PostgreSQL', 'MongoDB', 'Redis', 'DynamoDB', 'Elasticsearch']
+          category: 'Cloud DevOps',
+          skills: ['AWS Bedrock', 'AWS SageMaker AI', 'AWS ECS Fargate', 'AWS S3', 'AWS Athena', 'AWS Glue', 'IAM']
+        },
+        {
+          category: 'Programming',
+          skills: ['Python', 'LangGraph', 'LangChain', 'NumPy', 'Pandas', 'scikit-learn', 'Pydantic', 'FastAPI', 'Matplotlib', 'boto3', 'Streamlit', 'SQL', 'React']
+        },
+        {
+          category: 'ML/Analytics',
+          skills: ['Data Modeling', 'Statistical Modeling', 'ML', 'Deep Learning', 'Graph Analytics', 'NLP', 'Computer Vision', 'Time-series Analysis']
         }
       ],
       highlights: [
-        { value: '5+', label: 'Years Experience' },
-        { value: '20+', label: 'Projects Delivered' },
-        { value: '99%', label: 'Client Satisfaction' }
+        { value: '5,000+', label: 'Active Users impacted by AI copilot systems' },
+        { value: '6+', label: 'Years of professional experience in AI/ML' },
+        { value: '40%', label: 'Efficiency gain achieved through data architecture improvements' },
+        { value: '98.59%', label: 'Computer Vision accuracy on microplate classification' }
       ],
       contacts: [
         { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
+        { label: 'Phone', url: 'tel:(765)-637-1295' },
         { label: 'LinkedIn', url: 'https://linkedin.com/in/vibhorjaney' },
-        { label: 'GitHub', url: 'https://github.com/vibhorjaney' },
-        { label: 'Website', url: 'https://vibhorjaney.dev' }
+        { label: 'Location', url: '#' }
       ]
     },
     experience: [
       {
-        employer: 'TechCorp Solutions',
-        title: 'Senior Full Stack Developer',
-        timeframe: 'Jan 2022 - Present',
-        location: 'San Francisco, CA (Remote)',
-        summary: 'Leading development of enterprise-scale SaaS applications',
+        employer: 'Bristol Myers Squibb',
+        title: 'Senior Manager, AI Solution Architect, GPS Business Insights and Technology',
+        timeframe: 'Jul 2025 – Present',
+        location: 'New Brunswick, NJ',
+        summary: 'Leading AI solution architecture for manufacturing operations, delivering copilot experiences to 5,000+ users while implementing advanced LLM observability and agentic orchestration systems.',
         achievements: [
-          'Architected and deployed microservices-based platform serving 100K+ daily active users',
-          'Reduced API response times by 60% through caching strategies and query optimization',
-          'Led a team of 5 developers in migrating legacy monolith to modern cloud-native architecture',
-          'Implemented CI/CD pipelines reducing deployment time from hours to minutes'
+          'Delivering an AI copilot and decision-support experience targeting 5,000+ manufacturing and quality users. Architecting an agentic orchestration layer with a graph-based workflow engine, containerized for elastic deployment, leveraging data lake query engines over S3. Implementing MCP tool declarations to standardize capability exposure across agents and systems.',
+          'Building pipelines to identify, document, and perform RCA on deviations, auto-generate CAPA drafts (HITL), and constructing semantic knowledge bases from historical deviation worklists and SOPs. Enabling text-to-SQL access to past deviations.',
+          'Implementing an LLM observability and tracing layer for generation traceability, prompt versioning, and end-to-end visibility testing to support validation. Designing guardrails, RBAC, and audit trails aligned to GxP expectations.'
         ]
       },
       {
-        employer: 'StartupXYZ',
-        title: 'Full Stack Developer',
-        timeframe: 'Jun 2020 - Dec 2021',
-        location: 'New York, NY',
-        summary: 'Built features for fintech platform from ground up',
+        employer: 'Bristol Myers Squibb',
+        title: 'Manager, Data Architecture, Global Product Development and Supply',
+        timeframe: 'Jul 2023 – Jul 2025',
+        location: 'New Brunswick, NJ',
+        summary: 'Architected comprehensive data solutions for manufacturing operations, creating unified batch genealogy systems that reduced processing time by 40% and improved release decision efficiency by 50%.',
         achievements: [
-          'Developed real-time payment processing system handling $10M+ monthly transactions',
-          'Created responsive dashboard with data visualization using D3.js and React',
-          'Implemented OAuth 2.0 and JWT-based authentication for secure API access',
-          'Collaborated with product team to deliver features 20% faster than projected timelines'
+          'Led information and data architecture for manufacturing, including a Batch Genealogy graph data product (BGDP) unifying SAP, Oracle EBS, and CMO sources, reducing data processing time by >40%. Architected and integrated 7 contract manufacturing organizations genealogy from CoA/CoC documents into BGDP, enabling traceability.',
+          'Integrated BGDP with SAP Batch Release Hub (Component Check) under the APMC program, improved release decision efficiency by >50%.',
+          'Launched a metadata cataloging initiative for the manufacturing data lake, aligning business and technical metadata across 7+ source integrations.'
         ]
       },
       {
-        employer: 'Digital Agency Pro',
-        title: 'Junior Developer',
-        timeframe: 'Aug 2019 - May 2020',
-        location: 'Austin, TX',
-        summary: 'Developed websites and web applications for diverse clients',
+        employer: 'Formulatrix',
+        title: 'Machine Learning Specialist',
+        timeframe: 'Jun 2022 – Aug 2022',
+        location: 'Bedford, MA',
+        summary: 'Developed high-accuracy computer vision solutions for laboratory automation, achieving 98.59% classification accuracy while optimizing models for edge deployment and conducting analytical insights.',
         achievements: [
-          'Built 15+ responsive websites for clients across various industries',
-          'Optimized website performance achieving 90+ Lighthouse scores consistently',
-          'Integrated third-party APIs including Stripe, SendGrid, and Google Maps'
+          'Built a computer vision model to classify microplates for the FAST Liquid Handler, achieving 98.59% accuracy across datasets. Implemented in TensorFlow using Classification-by-Retrieval (CbR)',
+          'Created an API configuration for image capture and curated labeled datasets under varied conditions. Tested inference on Raspberry Pi Zero & Coral Edge TPU.',
+          'Conducted a salary analysis across multiple offices. Built a regression model in R to forecast increments and visualized results.'
+        ]
+      },
+      {
+        employer: 'Zebra Technologies',
+        title: 'Software Engineer',
+        timeframe: 'Oct 2019 – Jun 2021',
+        location: 'Kennesaw, GA',
+        summary: 'Led front-end development and UX design for new product launches while contributing to advanced analytics solutions including anomaly detection models and banking branch management systems.',
+        achievements: [
+          'Led the front-end design team for a new product launch; redesigned UX in Figma/Adobe XD and implemented with React.',
+          'Collaborated to deploy an anomaly detection model in Python combining a boxplot method with FBProphet.',
+          'Contributed to the inception and design of a new banking branch management product.'
         ]
       }
     ],
     education: [
       {
-        institution: 'University of Technology',
-        degree: 'Bachelor of Science in Computer Science',
-        timeframe: '2015 - 2019',
-        location: 'Austin, TX'
+        institution: 'Tufts University',
+        degree: 'MS, Data Science',
+        timeframe: 'Sep 2021 – Dec 2022',
+        location: 'Medford, MA'
+      },
+      {
+        institution: 'Purdue University',
+        degree: 'B.Sc., Computer Graphics Technology',
+        timeframe: 'Aug 2015 – May 2019',
+        location: 'West Lafayette, IN'
       }
     ],
     projects: [
       {
-        title: 'E-Commerce Platform',
-        description: 'Full-stack e-commerce solution with React frontend, Node.js backend, and Stripe integration. Features include real-time inventory management, user authentication, and admin dashboard.',
-        link: 'https://github.com/vibhorjaney/ecommerce-platform'
+        title: 'Deviation Assistant',
+        description: 'Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.',
+        link: 'https://github.com/bms-corp/deviation-copilot'
       },
       {
-        title: 'Task Management App',
-        description: 'Collaborative project management tool built with Next.js and PostgreSQL. Includes real-time updates via WebSockets, drag-and-drop interface, and team collaboration features.',
-        link: 'https://github.com/vibhorjaney/task-manager'
+        title: 'Batch Genealogy Data Product (BGDP)',
+        description: 'Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.',
+        link: 'https://github.com/bms-corp/gps-batch-genealogy'
       },
       {
-        title: 'Data Visualization Dashboard',
-        description: 'Interactive analytics dashboard using D3.js and React. Processes large datasets and renders interactive charts, graphs, and geographic visualizations.',
-        link: 'https://github.com/vibhorjaney/data-viz-dashboard'
+        title: 'Microplate Classification System',
+        description: 'Built a computer vision model to classify microplates for the FAST Liquid Handler at Formulatrix, achieving 98.59% accuracy using TensorFlow and Classification-by-Retrieval (CbR) methodology. Optimized for edge deployment on Raspberry Pi and Coral Edge TPU.',
+        link: 'https://github.com/Vibz28'
+      },
+      {
+        title: 'Banking Branch Management System',
+        description: 'Contributed to the inception and design of a new banking branch management product at Zebra Technologies, focusing on UX design in Figma/Adobe XD and front-end implementation with React.',
+        link: 'https://github.com/Vibz28'
+      },
+      {
+        title: 'Anomaly Detection Engine',
+        description: 'Deployed an anomaly detection model combining boxplot methodology with FBProphet for time series forecasting and outlier identification in banking analytics.',
+        link: 'https://github.com/Vibz28'
+      },
+      {
+        title: 'Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)',
+        description: 'Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples; trained on data from Li et al., Crop pest recognition in natural scenes using convolutional neural networks.',
+        link: 'https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi'
       }
     ],
     courses: [
       {
-        title: 'AWS Certified Solutions Architect',
-        institution: 'Amazon Web Services',
-        date: '2023'
-      },
-      {
-        title: 'Advanced React Patterns',
-        institution: 'Frontend Masters',
-        date: '2022'
-      },
-      {
-        title: 'System Design Fundamentals',
-        institution: 'Educative',
-        date: '2022'
-      },
-      {
-        title: 'Machine Learning Specialization',
-        institution: 'Coursera (Stanford)',
-        date: '2021'
+        title: 'Steve Hoberman\'s Live Online Data Modeling Master Class',
+        institution: 'Technics Publications',
+        date: 'Dec 2024'
       }
     ],
     publications: []
