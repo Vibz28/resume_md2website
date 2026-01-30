@@ -480,14 +480,32 @@ export function parseResumeMarkdown(): ParsedContent {
     const contactLine = lines.find(line => line.includes('mailto:'));
     const contacts = [];
     if (contactLine) {
+      // Email
       const emailMatch = contactLine.match(/\[([^\]]+)\]\(mailto:([^)]+)\)/);
       if (emailMatch) {
         contacts.push({ label: 'Email', url: `mailto:${emailMatch[2]}` });
       }
       
+      // Phone - match pattern like (765)-637-1295
+      const phoneMatch = contactLine.match(/\(?\d{3}\)?[-.]?\d{3}[-.]?\d{4}/);
+      if (phoneMatch) {
+        const phone = phoneMatch[0].replace(/\D/g, '');
+        contacts.push({ label: 'Phone', url: `tel:${phone}` });
+      }
+      
+      // LinkedIn
       const linkedinMatch = contactLine.match(/\[([^\]]+)\]\(https:\/\/[^)]*linkedin[^)]*\)/);
       if (linkedinMatch) {
         contacts.push({ label: 'LinkedIn', url: linkedinMatch[0].match(/https:\/\/[^)]*/)?.[0] || '' });
+      }
+      
+      // Location - text after LinkedIn or at end of line
+      const locationMatch = contactLine.match(/\|\s*([^|]+)$/);
+      if (locationMatch) {
+        const location = locationMatch[1].trim();
+        if (location && !location.includes('linkedin') && !location.includes('@')) {
+          contacts.push({ label: 'Location', url: `https://maps.google.com/?q=${encodeURIComponent(location)}` });
+        }
       }
     }
 

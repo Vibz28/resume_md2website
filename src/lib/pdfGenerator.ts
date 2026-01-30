@@ -8,22 +8,35 @@ export interface PDFOptions {
   resumeData?: ParsedContent;
 }
 
-function formatContactsForPDF(profile: Profile): string[] {
-  const contacts: string[] = [];
+function formatContactsForPDF(profile: Profile): { text: string; url?: string }[] {
+  const contacts: { text: string; url?: string }[] = [];
   
-  // Extract email
+  // Extract email with hyperlink
   const emailContact = profile.contacts.find(c => c.label.toLowerCase() === 'email');
   if (emailContact) {
     const email = emailContact.url.replace('mailto:', '');
-    contacts.push(email);
+    contacts.push({ text: email, url: emailContact.url });
   }
   
-  // Extract LinkedIn
+  // Extract phone
+  const phoneContact = profile.contacts.find(c => c.label.toLowerCase() === 'phone');
+  if (phoneContact) {
+    const phone = phoneContact.url.replace('tel:', '');
+    contacts.push({ text: phone, url: phoneContact.url });
+  }
+  
+  // Extract LinkedIn with hyperlink
   const linkedInContact = profile.contacts.find(c => c.label.toLowerCase() === 'linkedin');
   if (linkedInContact) {
     const linkedinUrl = linkedInContact.url;
     const username = linkedinUrl.split('/in/')[1]?.replace('/', '') || linkedinUrl;
-    contacts.push(`linkedin.com/in/${username}`);
+    contacts.push({ text: `linkedin.com/in/${username}`, url: linkedInContact.url });
+  }
+  
+  // Extract location
+  const locationContact = profile.contacts.find(c => c.label.toLowerCase() === 'location');
+  if (locationContact) {
+    contacts.push({ text: locationContact.url.replace('https://maps.google.com/?q=', '').replace(/\+/g, ' ') });
   }
   
   return contacts;
@@ -90,8 +103,25 @@ export function generateResumePDF(options: PDFOptions = {}) {
     doc.setFontSize(10);
     doc.setTextColor(...lightGray);
     
-    const contactText = contactStrings.join(' | ');
-    currentY = addWrappedText(contactText, margin, currentY, contentWidth, 4);
+    // Add contact information with hyperlinks
+    let contactX = margin;
+    contactStrings.forEach((contact, index) => {
+      if (index > 0) {
+        doc.text(' | ', contactX, currentY);
+        contactX += doc.getTextWidth(' | ');
+      }
+      
+      const contactWidth = doc.getTextWidth(contact.text);
+      doc.text(contact.text, contactX, currentY);
+      
+      // Add hyperlink if URL exists
+      if (contact.url) {
+        doc.link(contactX, currentY - 3, contactWidth, 5, { url: contact.url });
+      }
+      
+      contactX += contactWidth;
+    });
+    currentY += 6;
 
     // Horizontal line
     currentY += 8;
@@ -316,9 +346,9 @@ function getFallbackResumeData(): ParsedContent {
       ],
       contacts: [
         { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
-        { label: 'Phone', url: 'tel:(765)-637-1295' },
+        { label: 'Phone', url: 'tel:7656371295' },
         { label: 'LinkedIn', url: 'https://linkedin.com/in/vibhorjaney' },
-        { label: 'Location', url: '#' }
+        { label: 'Location', url: 'https://maps.google.com/?q=East+Brunswick,+NJ' }
       ]
     },
     experience: [
