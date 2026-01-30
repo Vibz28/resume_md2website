@@ -18,11 +18,12 @@ function formatContactsForPDF(profile: Profile): { text: string; url?: string }[
     contacts.push({ text: email, url: emailContact.url });
   }
   
-  // Extract phone
+  // Extract phone and format with dashes
   const phoneContact = profile.contacts.find(c => c.label.toLowerCase() === 'phone');
   if (phoneContact) {
-    const phone = phoneContact.url.replace('tel:', '');
-    contacts.push({ text: phone, url: phoneContact.url });
+    const phoneDigits = phoneContact.url.replace('tel:', '').replace(/\D/g, '');
+    const formattedPhone = phoneDigits.replace(/(\d{3})(\d{3})(\d{4})/, '($1)-$2-$3');
+    contacts.push({ text: formattedPhone, url: phoneContact.url });
   }
   
   // Extract LinkedIn with hyperlink
@@ -36,7 +37,8 @@ function formatContactsForPDF(profile: Profile): { text: string; url?: string }[
   // Extract location
   const locationContact = profile.contacts.find(c => c.label.toLowerCase() === 'location');
   if (locationContact) {
-    contacts.push({ text: locationContact.url.replace('https://maps.google.com/?q=', '').replace(/\+/g, ' ') });
+    const locationText = decodeURIComponent(locationContact.url.replace('https://maps.google.com/?q=', '').replace(/\+/g, ' '));
+    contacts.push({ text: locationText, url: locationContact.url });
   }
   
   return contacts;
