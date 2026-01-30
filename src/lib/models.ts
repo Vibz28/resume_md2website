@@ -44,9 +44,24 @@ export interface Publication {
   category?: string;
 }
 
+export interface Education {
+  institution: string;
+  degree: string;
+  timeframe: string;
+  location: string;
+}
+
+export interface Course {
+  title: string;
+  institution: string;
+  date: string;
+}
+
 export interface ParsedContent {
   profile: Profile;
   experience: ExperienceEntry[];
+  education: Education[];
   projects: Project[];
+  courses: Course[];
   publications: Publication[];
 }

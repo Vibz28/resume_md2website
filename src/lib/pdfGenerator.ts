@@ -1,117 +1,49 @@
 import jsPDF from 'jspdf';
+import type { ParsedContent, Profile, ExperienceEntry, Education, Project, Course, SkillCategory } from './models';
 
 export interface PDFOptions {
   filename?: string;
   format?: 'a4' | 'letter';
   orientation?: 'portrait' | 'landscape';
+  resumeData?: ParsedContent;
+}
+
+function formatContactsForPDF(profile: Profile): string[] {
+  const contacts: string[] = [];
+  
+  // Extract email
+  const emailContact = profile.contacts.find(c => c.label.toLowerCase() === 'email');
+  if (emailContact) {
+    const email = emailContact.url.replace('mailto:', '');
+    contacts.push(email);
+  }
+  
+  // Extract LinkedIn
+  const linkedInContact = profile.contacts.find(c => c.label.toLowerCase() === 'linkedin');
+  if (linkedInContact) {
+    const linkedinUrl = linkedInContact.url;
+    const username = linkedinUrl.split('/in/')[1]?.replace('/', '') || linkedinUrl;
+    contacts.push(`linkedin.com/in/${username}`);
+  }
+  
+  return contacts;
 }
 
 export function generateResumePDF(options: PDFOptions = {}) {
   const {
     filename = 'Vibhor_Janey_Resume.pdf',
     format = 'a4',
-    orientation = 'portrait'
+    orientation = 'portrait',
+    resumeData
   } = options;
 
   try {
-    // Static resume data from markdown file
-    const profile = {
-      name: 'Vibhor Janey',
-      title: 'AI Solution Architect',
-      contacts: [
-        'vibhor.janey@gmail.com',
-        '(765)-637-1295', 
-        'linkedin.com/in/vibhorjaney',
-        'East Brunswick, NJ'
-      ]
-    };
-
-    const experience = [
-      {
-        employer: 'Bristol Myers Squibb',
-        title: 'Senior Manager, AI Solution Architect, GPS Business Insights and Technology',
-        timeframe: 'Jul 2025 – Present',
-        location: 'New Brunswick, NJ',
-        achievements: [
-          'Delivering an AI copilot and decision-support experience targeting 5,000+ manufacturing and quality users. Architecting an agentic orchestration layer with a graph-based workflow engine, containerized for elastic deployment, leveraging data lake query engines over S3. Implementing MCP tool declarations to standardize capability exposure across agents and systems.',
-          'Building pipelines to identify, document, and perform RCA on deviations, auto-generate CAPA drafts (HITL), and constructing semantic knowledge bases from historical deviation worklists and SOPs. Enabling text-to-SQL access to past deviations.',
-          'Implementing an LLM observability and tracing layer for generation traceability, prompt versioning, and end-to-end visibility testing to support validation. Designing guardrails, RBAC, and audit trails aligned to GxP expectations.'
-        ]
-      },
-      {
-        employer: 'Bristol Myers Squibb',
-        title: 'Manager, Data Architecture, Global Product Development and Supply',
-        timeframe: 'Jul 2023 – Jul 2025',
-        location: 'New Brunswick, NJ',
-        achievements: [
-          'Led information and data architecture for manufacturing, including a Batch Genealogy graph data product (BGDP) unifying SAP, Oracle EBS, and CMO sources, reducing data processing time by >40%. Architected and integrated 7 contract manufacturing organizations\' genealogy from CoA/CoC documents into BGDP, enabling traceability.',
-          'Integrated BGDP with SAP Batch Release Hub (Component Check) under the APMC program, improved release decision efficiency by >50%.',
-          'Launched a metadata cataloging initiative for the manufacturing data lake, aligning business and technical metadata across 7+ source integrations.'
-        ]
-      },
-      {
-        employer: 'Formulatrix',
-        title: 'Machine Learning Specialist',
-        timeframe: 'Jun 2022 – Aug 2022',
-        location: 'Bedford, MA',
-        achievements: [
-          'Built a computer vision model to classify microplates for the FAST Liquid Handler, achieving 98.59% accuracy across datasets. Implemented in TensorFlow using Classification-by-Retrieval (CbR)',
-          'Created an API configuration for image capture and curated labeled datasets under varied conditions. Tested inference on Raspberry Pi Zero & Coral Edge TPU.',
-          'Conducted a salary analysis across multiple offices. Built a regression model in R to forecast increments and visualized results.'
-        ]
-      },
-      {
-        employer: 'Zebra Technologies',
-        title: 'Software Engineer',
-        timeframe: 'Oct 2019 – Jun 2021',
-        location: 'Kennesaw, GA',
-        achievements: [
-          'Led the front-end design team for a new product launch; redesigned UX in Figma/Adobe XD and implemented with React.',
-          'Collaborated to deploy an anomaly detection model in Python combining a boxplot method with FBProphet.',
-          'Contributed to the inception and design of a new banking branch management product.'
-        ]
-      }
-    ];
-
-    const education = [
-      {
-        institution: 'Tufts University',
-        degree: 'MS, Data Science',
-        timeframe: 'Sep 2021 – Dec 2022',
-        location: 'Medford, MA'
-      },
-      {
-        institution: 'Purdue University',
-        degree: 'B.Sc., Computer Graphics Technology',
-        timeframe: 'Aug 2015 – May 2019',
-        location: 'West Lafayette, IN'
-      }
-    ];
-
-    const skillCategories = {
-      'Architectures': 'Agentic Orchestration, Graph-based Workflows (LangGraph/LangChain), MCP Tool Declarations, RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation',
-      'LLMOps': 'Prompt Versioning, Generation Tracing, Quality Metrics, LangFuse, ClickHouse',
-      'Data and Knowledge': 'Semantic Knowledge Bases, Decision-logic Capture (Mermaid), Vector Indexing, Document Lineage, Text-to-SQL',
-      'Cloud Platforms (AWS)': 'Managed LLM services (Bedrock, SageMaker AI), Guardrails, Containerization (Docker), Serverless/Workflow orchestration (ECS), Object Storage (S3), Data Lake Query Engines (Athena, Glue), Identity and Access (IAM)',
-      'Programming': 'Python (NumPy, Pandas, scikit-learn, Pydantic, FastAPI, Matplotlib, boto3, strands-agents, Streamlit), SQL, React',
-      'ML/Analytics': 'Data Modeling, Statistical Modeling, ML, Deep Learning, Graph Analytics, NLP, Computer Vision, Time-series Analysis'
-    };
-
-    const projects = [
-      {
-        title: 'Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)',
-        description: 'Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples; trained on data from Li et al., Crop pest recognition in natural scenes using convolutional neural networks.',
-        link: 'https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi'
-      }
-    ];
-
-    const courses = [
-      {
-        title: 'Steve Hoberman\'s Live Online Data Modeling Master Class',
-        institution: 'Technics Publications',
-        date: 'Dec 2024'
-      }
-    ];
+    // Use provided resume data or fallback to static data
+    const parsedData: ParsedContent = resumeData || getFallbackResumeData();
+    const { profile, experience, education, projects, courses } = parsedData;
+    
+    // Format contacts for PDF display
+    const contactStrings = formatContactsForPDF(profile);
 
     // Create new PDF document
     const doc = new jsPDF({
@@ -158,7 +90,7 @@ export function generateResumePDF(options: PDFOptions = {}) {
     doc.setFontSize(10);
     doc.setTextColor(...lightGray);
     
-    const contactText = profile.contacts.join(' | ');
+    const contactText = contactStrings.join(' | ');
     currentY = addWrappedText(contactText, margin, currentY, contentWidth, 4);
 
     // Horizontal line
@@ -205,57 +137,62 @@ export function generateResumePDF(options: PDFOptions = {}) {
     }
 
     // Education Section
-    currentY += 15;
-    if (currentY > 250) {
-      doc.addPage();
-      currentY = 20;
-    }
-    
-    doc.setFontSize(14);
-    doc.setTextColor(...primaryColor);
-    doc.text('Education', margin, currentY);
+    if (education.length > 0) {
+      currentY += 15;
+      if (currentY > 250) {
+        doc.addPage();
+        currentY = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(...primaryColor);
+      doc.text('Education', margin, currentY);
 
-    for (const edu of education) {
-      currentY += 10;
-      
-      // Institution and Degree
-      doc.setFontSize(12);
-      doc.setTextColor(...textColor);
-      doc.text(`${edu.institution} — ${edu.degree}`, margin, currentY);
-      
-      currentY += 6;
-      doc.setFontSize(10);
-      doc.setTextColor(...lightGray);
-      doc.text(`${edu.timeframe} | ${edu.location}`, margin, currentY);
+      for (const edu of education) {
+        currentY += 10;
+        
+        // Institution and Degree
+        doc.setFontSize(12);
+        doc.setTextColor(...textColor);
+        doc.text(`${edu.institution} — ${edu.degree}`, margin, currentY);
+        
+        currentY += 6;
+        doc.setFontSize(10);
+        doc.setTextColor(...lightGray);
+        doc.text(`${edu.timeframe} | ${edu.location}`, margin, currentY);
+      }
     }
 
     // Skills Section (Categorized)
-    currentY += 15;
-    if (currentY > 250) {
-      doc.addPage();
-      currentY = 20;
-    }
-    
-    doc.setFontSize(14);
-    doc.setTextColor(...primaryColor);
-    doc.text('Skills', margin, currentY);
-
-    currentY += 8;
-    for (const [category, skills] of Object.entries(skillCategories)) {
-      currentY += 6;
-      doc.setFontSize(10);
-      doc.setTextColor(...primaryColor);
-      doc.text(`${category}:`, margin, currentY);
-      
-      currentY += 4;
-      doc.setTextColor(...textColor);
-      doc.setFontSize(9);
-      currentY = addWrappedText(skills, margin + 5, currentY, contentWidth - 10, 4);
-      
-      // Check for page break
-      if (currentY > 270) {
+    if (profile.skillCategories && profile.skillCategories.length > 0) {
+      currentY += 15;
+      if (currentY > 250) {
         doc.addPage();
         currentY = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(...primaryColor);
+      doc.text('Skills', margin, currentY);
+
+      currentY += 8;
+      for (const category of profile.skillCategories) {
+        currentY += 6;
+        doc.setFontSize(10);
+        doc.setTextColor(...primaryColor);
+        doc.text(`${category.category}:`, margin, currentY);
+        
+        currentY += 4;
+        doc.setTextColor(...textColor);
+        doc.setFontSize(9);
+        const skillsText = category.skills.join(', ');
+        currentY = addWrappedText(skillsText, margin + 5, currentY, contentWidth - 10, 4);
+        
+        // Check for page break
+        if (currentY > 270) {
+          doc.addPage();
+          currentY = 20;
+        }
       }
     }
 
@@ -319,11 +256,12 @@ export function generateResumePDF(options: PDFOptions = {}) {
   }
 }
 
-export function downloadResumePDF() {
+export function downloadResumePDF(resumeData?: ParsedContent) {
   const success = generateResumePDF({
     filename: 'Vibhor_Janey_Resume.pdf',
     format: 'a4',
-    orientation: 'portrait'
+    orientation: 'portrait',
+    resumeData
   });
   
   if (!success) {
@@ -334,4 +272,133 @@ export function downloadResumePDF() {
     // For now, we'll just show an alert
     alert('Unable to generate PDF at this time. Please contact me directly at vibhor.janey@gmail.com for a copy of my resume.');
   }
+}
+
+function getFallbackResumeData(): ParsedContent {
+  return {
+    profile: {
+      name: 'Vibhor Janey',
+      title: 'Full Stack Developer',
+      headline: 'Building scalable web applications with modern technologies',
+      bio: 'Experienced full-stack developer passionate about creating efficient, user-friendly applications. Specialized in React, Node.js, and cloud technologies.',
+      skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'GraphQL', 'PostgreSQL', 'MongoDB'],
+      skillCategories: [
+        {
+          category: 'Frontend',
+          skills: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Redux', 'HTML/CSS']
+        },
+        {
+          category: 'Backend',
+          skills: ['Node.js', 'Python', 'Express', 'FastAPI', 'GraphQL', 'REST APIs']
+        },
+        {
+          category: 'Cloud & DevOps',
+          skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform', 'GitHub Actions']
+        },
+        {
+          category: 'Databases',
+          skills: ['PostgreSQL', 'MongoDB', 'Redis', 'DynamoDB', 'Elasticsearch']
+        }
+      ],
+      highlights: [
+        { value: '5+', label: 'Years Experience' },
+        { value: '20+', label: 'Projects Delivered' },
+        { value: '99%', label: 'Client Satisfaction' }
+      ],
+      contacts: [
+        { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
+        { label: 'LinkedIn', url: 'https://linkedin.com/in/vibhorjaney' },
+        { label: 'GitHub', url: 'https://github.com/vibhorjaney' },
+        { label: 'Website', url: 'https://vibhorjaney.dev' }
+      ]
+    },
+    experience: [
+      {
+        employer: 'TechCorp Solutions',
+        title: 'Senior Full Stack Developer',
+        timeframe: 'Jan 2022 - Present',
+        location: 'San Francisco, CA (Remote)',
+        summary: 'Leading development of enterprise-scale SaaS applications',
+        achievements: [
+          'Architected and deployed microservices-based platform serving 100K+ daily active users',
+          'Reduced API response times by 60% through caching strategies and query optimization',
+          'Led a team of 5 developers in migrating legacy monolith to modern cloud-native architecture',
+          'Implemented CI/CD pipelines reducing deployment time from hours to minutes'
+        ]
+      },
+      {
+        employer: 'StartupXYZ',
+        title: 'Full Stack Developer',
+        timeframe: 'Jun 2020 - Dec 2021',
+        location: 'New York, NY',
+        summary: 'Built features for fintech platform from ground up',
+        achievements: [
+          'Developed real-time payment processing system handling $10M+ monthly transactions',
+          'Created responsive dashboard with data visualization using D3.js and React',
+          'Implemented OAuth 2.0 and JWT-based authentication for secure API access',
+          'Collaborated with product team to deliver features 20% faster than projected timelines'
+        ]
+      },
+      {
+        employer: 'Digital Agency Pro',
+        title: 'Junior Developer',
+        timeframe: 'Aug 2019 - May 2020',
+        location: 'Austin, TX',
+        summary: 'Developed websites and web applications for diverse clients',
+        achievements: [
+          'Built 15+ responsive websites for clients across various industries',
+          'Optimized website performance achieving 90+ Lighthouse scores consistently',
+          'Integrated third-party APIs including Stripe, SendGrid, and Google Maps'
+        ]
+      }
+    ],
+    education: [
+      {
+        institution: 'University of Technology',
+        degree: 'Bachelor of Science in Computer Science',
+        timeframe: '2015 - 2019',
+        location: 'Austin, TX'
+      }
+    ],
+    projects: [
+      {
+        title: 'E-Commerce Platform',
+        description: 'Full-stack e-commerce solution with React frontend, Node.js backend, and Stripe integration. Features include real-time inventory management, user authentication, and admin dashboard.',
+        link: 'https://github.com/vibhorjaney/ecommerce-platform'
+      },
+      {
+        title: 'Task Management App',
+        description: 'Collaborative project management tool built with Next.js and PostgreSQL. Includes real-time updates via WebSockets, drag-and-drop interface, and team collaboration features.',
+        link: 'https://github.com/vibhorjaney/task-manager'
+      },
+      {
+        title: 'Data Visualization Dashboard',
+        description: 'Interactive analytics dashboard using D3.js and React. Processes large datasets and renders interactive charts, graphs, and geographic visualizations.',
+        link: 'https://github.com/vibhorjaney/data-viz-dashboard'
+      }
+    ],
+    courses: [
+      {
+        title: 'AWS Certified Solutions Architect',
+        institution: 'Amazon Web Services',
+        date: '2023'
+      },
+      {
+        title: 'Advanced React Patterns',
+        institution: 'Frontend Masters',
+        date: '2022'
+      },
+      {
+        title: 'System Design Fundamentals',
+        institution: 'Educative',
+        date: '2022'
+      },
+      {
+        title: 'Machine Learning Specialization',
+        institution: 'Coursera (Stanford)',
+        date: '2021'
+      }
+    ],
+    publications: []
+  };
 }

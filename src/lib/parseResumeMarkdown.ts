@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { ParsedContent, Profile, ExperienceEntry, Project, Publication } from './models';
+import type { ParsedContent, Profile, ExperienceEntry, Project, Publication, Education, Course } from './models';
 
 // Cache for parsed markdown text to avoid re-processing
 const markdownCache = new Map<string, string>();
@@ -292,8 +292,13 @@ function parseSkills(content: string): { allSkills: string[]; categories: Array<
     const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
       const categoryName = line.substring(2, colonIndex).replace(/\*\*/g, '').trim();
-      const skillsInLine = line.substring(colonIndex + 1).split(',');
-      const categorySkills = skillsInLine.map(s => s.trim()).filter(s => s && !s.startsWith('**'));
+      // Get content after colon and split by comma
+      const skillsContent = line.substring(colonIndex + 1).trim();
+      const skillsInLine = skillsContent.split(',');
+      // Filter out empty strings and trim each skill
+      const categorySkills = skillsInLine
+        .map(s => s.trim())
+        .filter(s => s && s.length > 0);
       
       if (categoryName && categorySkills.length > 0) {
         categories.push({
@@ -306,6 +311,89 @@ function parseSkills(content: string): { allSkills: string[]; categories: Array<
   });
   
   return { allSkills, categories };
+}
+
+function parseEducation(content: string): Education[] {
+  const education: Education[] = [];
+  
+  const educationSection = content.match(/## EDUCATION\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!educationSection) return education;
+  
+  const educationText = educationSection[1];
+  
+  // Split by double newlines to get individual education entries
+  const eduBlocks = educationText.split(/\n\n+/).filter(block => block.trim());
+  
+  for (const block of eduBlocks) {
+    const lines = block.split('\n').filter(line => line.trim());
+    if (lines.length === 0) continue;
+    
+    // Parse first line: **Institution** — *Degree*
+    const firstLine = lines[0];
+    const institutionMatch = firstLine.match(/^\*\*([^*]+)\*\*\s*—\s*\*([^*]+)\*/);
+    if (!institutionMatch) continue;
+    
+    const institution = institutionMatch[1].trim();
+    const degree = institutionMatch[2].trim();
+    
+    // Parse second line: Timeframe | Location
+    let timeframe = '';
+    let location = '';
+    if (lines.length > 1) {
+      const secondLine = lines[1];
+      const parts = secondLine.split('|').map(p => p.trim());
+      timeframe = parts[0] || '';
+      location = parts[1] || '';
+    }
+    
+    education.push({
+      institution,
+      degree,
+      timeframe,
+      location
+    });
+  }
+  
+  return education;
+}
+
+function parseCourses(content: string): Course[] {
+  const courses: Course[] = [];
+  
+  const coursesSection = content.match(/## COURSES\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!coursesSection) return courses;
+  
+  const coursesText = coursesSection[1];
+  
+  // Split by double newlines to get individual course entries
+  const courseBlocks = coursesText.split(/\n\n+/).filter(block => block.trim());
+  
+  for (const block of courseBlocks) {
+    const lines = block.split('\n').filter(line => line.trim());
+    if (lines.length === 0) continue;
+    
+    // Parse first line: **Title** — Institution
+    const firstLine = lines[0];
+    const titleMatch = firstLine.match(/^\*\*([^*]+)\*\*\s*—\s*(.+)$/);
+    if (!titleMatch) continue;
+    
+    const title = titleMatch[1].trim();
+    const institution = titleMatch[2].trim();
+    
+    // Parse second line: Date
+    let date = '';
+    if (lines.length > 1) {
+      date = lines[1].trim();
+    }
+    
+    courses.push({
+      title,
+      institution,
+      date
+    });
+  }
+  
+  return courses;
 }
 
 function parsePublications(content: string): Publication[] {
@@ -437,15 +525,19 @@ export function parseResumeMarkdown(): ParsedContent {
       contacts
     };
 
-    // Parse experience, projects, and publications
+    // Parse experience, education, projects, courses, and publications
     const experience = parseWorkExperience(content);
+    const education = parseEducation(content);
     const projects = parseProjects(content);
+    const courses = parseCourses(content);
     const publications = parsePublications(content);
 
     const result = {
       profile,
       experience,
+      education,
       projects,
+      courses,
       publications
     };
 
@@ -500,11 +592,32 @@ export function parseResumeMarkdown(): ParsedContent {
           ]
         }
       ],
+      education: [
+        {
+          institution: 'Tufts University',
+          degree: 'MS, Data Science',
+          timeframe: 'Sep 2021 – Dec 2022',
+          location: 'Medford, MA'
+        },
+        {
+          institution: 'Purdue University',
+          degree: 'B.Sc., Computer Graphics Technology',
+          timeframe: 'Aug 2015 – May 2019',
+          location: 'West Lafayette, IN'
+        }
+      ],
       projects: [
         {
           title: 'Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)',
           description: 'Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples.',
           link: 'https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi'
+        }
+      ],
+      courses: [
+        {
+          title: "Steve Hoberman's Live Online Data Modeling Master Class",
+          institution: 'Technics Publications',
+          date: 'Dec 2024'
         }
       ],
       publications: []

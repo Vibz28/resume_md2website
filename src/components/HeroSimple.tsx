@@ -151,7 +151,7 @@ export function HeroSimple({ profile }: HeroSimpleProps) {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={downloadResumePDF}
+                onClick={() => downloadResumePDF()}
                 className="group flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all glow-cyan"
               >
                 <Download className="w-5 h-5 group-hover:animate-bounce" />
