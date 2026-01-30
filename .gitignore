@@ -148,3 +148,6 @@ config.local.*
 # Deployment artifacts (will be generated during CI/CD)
 deployment/
 deploy/
+
+# Design files (not needed in production)
+frontend-design/
