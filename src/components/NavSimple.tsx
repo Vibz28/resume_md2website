@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Github, Linkedin, Mail, Menu, X } from 'lucide-react';
 import { downloadResumePDF } from '@/lib/pdfGenerator';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navigationItems = [
   { name: 'About', href: '#about', number: '01' },
@@ -104,6 +105,7 @@ export function NavSimple() {
               ))}
               
               <div className="flex items-center gap-3 ml-6 pl-6 border-l border-border">
+                <ThemeToggle />
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
@@ -117,7 +119,8 @@ export function NavSimple() {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
+              <ThemeToggle />
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"

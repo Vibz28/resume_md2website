@@ -70,7 +70,11 @@ export function ContactForm() {
     const subject = encodeURIComponent(formData.subject.trim() || `Message from ${formData.name}`);
     const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
     
-    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    // Use anchor element for better mailto compatibility
+    const mailtoLink = document.createElement('a');
+    mailtoLink.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    mailtoLink.click();
+    
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
