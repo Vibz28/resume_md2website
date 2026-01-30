@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github, Play, ArrowUpRight, Sparkles, Zap, Database, Eye } from 'lucide-react';
+import { ExternalLink, Github, ArrowUpRight, Sparkles, Zap, Database, Eye } from 'lucide-react';
 import { Project } from '@/lib/models';
 
 interface ProjectsSectionProps {
@@ -24,65 +24,86 @@ interface EnhancedProject {
   };
 }
 
+// Project metadata mapping based on title keywords
+const projectMetadata: Record<string, Partial<EnhancedProject>> = {
+  "AI Copilot": {
+    category: "Manufacturing AI",
+    status: "Production" as const,
+    technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP", "Graph Workflows"],
+    metrics: ["5,000+ users", "Agentic orchestration", "GxP compliance"],
+    image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  "Batch Genealogy": {
+    category: "Data Architecture",
+    status: "Production" as const,
+    technologies: ["SAP", "Oracle EBS", "Graph Databases", "AWS", "Python", "SQL"],
+    metrics: ["40%+ time reduction", "50% efficiency improvement", "7+ integrations"],
+    image: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3NTc3OTYzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  "Microplate": {
+    category: "Laboratory Automation",
+    status: "Production" as const,
+    technologies: ["TensorFlow", "Computer Vision", "OpenCV", "Raspberry Pi", "Edge TPU", "Python"],
+    metrics: ["98.59% accuracy", "Edge deployment", "Lab automation"],
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  "Banking Branch": {
+    category: "Development",
+    status: "Production" as const,
+    technologies: ["React", "Figma", "Adobe XD", "UX Design", "Frontend"],
+    metrics: ["Product design", "UX implementation", "Full-stack"],
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  "Anomaly Detection": {
+    category: "Predictive Analytics",
+    status: "Production" as const,
+    technologies: ["Python", "FBProphet", "Statistical Analysis", "Time Series", "Anomaly Detection"],
+    metrics: ["Time series forecasting", "Statistical analysis", "Production deployment"],
+    image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  },
+  "Cotton Pest": {
+    category: "Agricultural AI",
+    status: "Research" as const,
+    technologies: ["PyTorch", "Few-Shot Learning", "Prototypical Networks", "Computer Vision", "Python"],
+    metrics: ["Few-shot learning", "Agricultural application", "Published research"],
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+  }
+};
+
 export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const enhancedProjects: EnhancedProject[] = [
-    ...(markdownProjects && markdownProjects.length > 0 ? markdownProjects.map(proj => ({
-      title: proj.title.replace(/\([^)]*\)$/, '').trim(),
-      description: proj.description,
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["PyTorch", "Few-Shot Learning", "Prototypical Networks", "Computer Vision", "Python"],
-      category: "Agricultural AI",
-      status: "Research" as const,
-      metrics: ["Few-shot learning", "Agricultural application", "Published research"],
-      links: {
-        paper: proj.link
-      }
-    })) : []),
-    {
-      title: "AI Copilot for Manufacturing",
-      description: "Leading the development of an AI copilot experience targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features agentic orchestration and graph-based workflow engines.",
-      image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP", "Graph Workflows"],
-      category: "Manufacturing AI",
+  // Transform markdown projects to enhanced format with metadata
+  const enhancedProjects: EnhancedProject[] = (markdownProjects || []).map(proj => {
+    // Find matching metadata based on title keywords
+    const metadataKey = Object.keys(projectMetadata).find(key => 
+      proj.title.toLowerCase().includes(key.toLowerCase())
+    );
+    
+    const metadata = metadataKey ? projectMetadata[metadataKey] : {
+      category: "Other",
       status: "Production" as const,
-      metrics: ["5,000+ users", "Agentic orchestration", "GxP compliance"],
-      links: {}
-    },
-    {
-      title: "Batch Genealogy Data Product",
-      description: "Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50%.",
-      image: "https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3NTc3OTYzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["SAP", "Oracle EBS", "Graph Databases", "AWS", "Python", "SQL"],
-      category: "Data Architecture",
-      status: "Production" as const,
-      metrics: ["40%+ time reduction", "50% efficiency improvement", "7+ integrations"],
-      links: {}
-    },
-    {
-      title: "Microplate Classification System",
-      description: "Built a computer vision model to classify microplates for the FAST Liquid Handler at Formulatrix, achieving 98.59% accuracy using Classification-by-Retrieval methodology.",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["TensorFlow", "Computer Vision", "OpenCV", "Raspberry Pi", "Edge TPU", "Python"],
-      category: "Laboratory Automation",
-      status: "Production" as const,
-      metrics: ["98.59% accuracy", "Edge deployment", "Lab automation"],
-      links: {}
-    },
-    {
-      title: "Anomaly Detection Engine",
-      description: "Collaborated to deploy an anomaly detection model combining boxplot methodology with FBProphet for time series forecasting and outlier identification.",
-      image: "https://images.unsplash.com/photo-1717501219263-9aa2d6a768d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNoaW5lJTIwbGVhcm5pbmclMjBuZXVyYWwlMjBuZXR3b3JrfGVufDF8fHx8MTc1Nzg3NDcyM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-      technologies: ["Python", "FBProphet", "Statistical Analysis", "Time Series", "Anomaly Detection"],
-      category: "Predictive Analytics",
-      status: "Production" as const,
-      metrics: ["Time series forecasting", "Statistical analysis", "Production deployment"],
-      links: {}
-    }
-  ];
+      technologies: ["Python", "AI/ML"],
+      metrics: ["Innovation", "Technical implementation"],
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzU3ODI2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+    };
 
-  const categories = ["All", "Manufacturing AI", "Data Architecture", "Laboratory Automation", "Predictive Analytics", "Agricultural AI"];
+    return {
+      title: proj.title,
+      description: proj.description,
+      image: metadata.image!,
+      technologies: metadata.technologies!,
+      category: metadata.category!,
+      status: metadata.status!,
+      metrics: metadata.metrics!,
+      links: {
+        github: proj.link?.includes('github.com') ? proj.link : undefined,
+        paper: proj.link?.includes('1drv.ms') ? proj.link : undefined
+      }
+    };
+  });
+
+  const categories = ["All", "Manufacturing AI", "Data Architecture", "Laboratory Automation", "Predictive Analytics", "Agricultural AI", "Development"];
 
   const filteredProjects = selectedCategory === "All" 
     ? enhancedProjects 
@@ -103,6 +124,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
       case "Data Architecture": return <Database className="w-4 h-4" />;
       case "Laboratory Automation": return <Eye className="w-4 h-4" />;
       case "Predictive Analytics": return <Sparkles className="w-4 h-4" />;
+      case "Development": return <Github className="w-4 h-4" />;
       default: return <Sparkles className="w-4 h-4" />;
     }
   };
