@@ -96,30 +96,8 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
               </div>
             </motion.div>
 
-            {/* Right Column - Skills & Contact */}
+            {/* Right Column - Connect */}
             <motion.div variants={itemVariants} className="lg:col-span-5 space-y-8">
-              {/* Skills */}
-              <div className="p-6 rounded-2xl bg-card border border-border/50">
-                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-primary rounded-full" />
-                  Skills & Expertise
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {profile.skills.map((skill, index) => (
-                    <motion.span
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.05 }}
-                      viewport={{ once: true }}
-                      className="px-3 py-1.5 bg-muted rounded-lg text-sm font-medium border border-border/50 hover:border-primary/30 hover:text-primary transition-colors"
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
-
               {/* Contact Links */}
               <div className="p-6 rounded-2xl bg-card border border-border/50">
                 <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
