@@ -1,9 +1,15 @@
+export interface SkillCategory {
+  category: string;
+  skills: string[];
+}
+
 export interface Profile {
   name: string;
   title: string;
   headline: string;
   bio: string;
   skills: string[];
+  skillCategories: SkillCategory[];
   highlights: Array<{
     value: string;
     label: string;

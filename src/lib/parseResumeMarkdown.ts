@@ -278,11 +278,12 @@ function parseProjects(content: string): Project[] {
   return projects;
 }
 
-function parseSkills(content: string): string[] {
-  const skills: string[] = [];
+function parseSkills(content: string): { allSkills: string[]; categories: Array<{category: string; skills: string[]}> } {
+  const allSkills: string[] = [];
+  const categories: Array<{category: string; skills: string[]}> = [];
   
   const skillsSection = content.match(/## SKILLS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
-  if (!skillsSection) return skills;
+  if (!skillsSection) return { allSkills, categories };
   
   const skillsText = skillsSection[1];
   const skillLines = skillsText.split('\n').filter(line => line.startsWith('**'));
@@ -290,12 +291,21 @@ function parseSkills(content: string): string[] {
   skillLines.forEach(line => {
     const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
+      const categoryName = line.substring(2, colonIndex).replace(/\*\*/g, '').trim();
       const skillsInLine = line.substring(colonIndex + 1).split(',');
-      skills.push(...skillsInLine.map(s => s.trim()).filter(s => s && !s.startsWith('**')));
+      const categorySkills = skillsInLine.map(s => s.trim()).filter(s => s && !s.startsWith('**'));
+      
+      if (categoryName && categorySkills.length > 0) {
+        categories.push({
+          category: categoryName,
+          skills: categorySkills
+        });
+        allSkills.push(...categorySkills);
+      }
     }
   });
   
-  return skills;
+  return { allSkills, categories };
 }
 
 function parsePublications(content: string): Publication[] {
@@ -410,7 +420,7 @@ export function parseResumeMarkdown(): ParsedContent {
     }
 
     // Parse skills
-    const skills = parseSkills(content);
+    const { allSkills: skills, categories: skillCategories } = parseSkills(content);
 
     // Create bio
     let bio = `${name} is an experienced ${title} with expertise in AI solution architecture, data engineering, and machine learning applications.`;
@@ -422,6 +432,7 @@ export function parseResumeMarkdown(): ParsedContent {
       headline,
       bio,
       skills: skills.slice(0, 15), // Get more skills for better display
+      skillCategories,
       highlights,
       contacts
     };
@@ -459,6 +470,11 @@ export function parseResumeMarkdown(): ParsedContent {
         headline: 'Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.',
         bio: 'Experienced AI Solution Architect specializing in manufacturing and healthcare AI applications.\n\nCurrently serving as Senior Manager of AI Solution Architect at Bristol Myers Squibb, leading development of AI copilot experiences for manufacturing operations.',
         skills: ['AI Architecture', 'Machine Learning', 'Data Engineering', 'Python', 'Next.js', 'React'],
+        skillCategories: [
+          { category: 'AI & ML', skills: ['Python', 'Machine Learning', 'Deep Learning', 'TensorFlow', 'PyTorch'] },
+          { category: 'Development', skills: ['React', 'Next.js', 'TypeScript', 'JavaScript'] },
+          { category: 'Cloud & Infrastructure', skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'] }
+        ],
         highlights: [
           { value: '5,000+', label: 'Active Users' },
           { value: '6+', label: 'Years Experience' },

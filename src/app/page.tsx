@@ -24,7 +24,7 @@ export default function Home() {
       <ProjectsSection projects={projects} />
 
       {/* Skills Section */}
-      <SkillsSection skills={profile.skills} />
+      <SkillsSection skillCategories={profile.skillCategories} />
 
       {/* Contact Section */}
       <ContactForm />

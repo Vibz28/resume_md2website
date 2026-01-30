@@ -1,68 +1,27 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { 
-  Cpu, 
-  Database, 
-  Code2, 
-  Cloud, 
-  Brain, 
-  GitBranch,
-  Terminal,
-  Server,
-  Workflow
-} from 'lucide-react';
+import type { SkillCategory } from '@/lib/models';
 
 interface SkillsSectionProps {
-  skills: string[];
+  skillCategories: SkillCategory[];
   isStandalone?: boolean;
 }
 
-export function SkillsSection({ skills, isStandalone = false }: SkillsSectionProps) {
-  // Define skill categories with their keywords
-  const skillCategories = [
-    {
-      category: "AI & ML",
-      icon: Brain,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      keywords: ['python', 'tensorflow', 'pytorch', 'scikit-learn', 'computer vision', 'nlp', 'langgraph', 'langchain', 'machine learning', 'deep learning', 'ml', 'ai']
-    },
-    {
-      category: "Data & Architecture",
-      icon: Database,
-      color: "text-secondary",
-      bgColor: "bg-secondary/10",
-      keywords: ['graph', 'aws', 'azure', 'sql', 'nosql', 'etl', 'data lake', 'sap', 'database', 'data architecture', 'vector', 'knowledge base']
-    },
-    {
-      category: "Development",
-      icon: Code2,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
-      keywords: ['javascript', 'typescript', 'react', 'node.js', 'next.js', 'rest', 'fastapi', 'api', 'frontend']
-    },
-    {
-      category: "Infrastructure",
-      icon: Server,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-      keywords: ['docker', 'kubernetes', 'git', 'ci/cd', 'terraform', 'bedrock', 'mcp', 'container', 'serverless', 'ecs']
-    }
+// Dynamic styling based on category index
+const getCategoryStyle = (index: number) => {
+  const styles = [
+    { color: "text-primary", bgColor: "bg-primary/10", borderColor: "border-primary/30" },
+    { color: "text-secondary", bgColor: "bg-secondary/10", borderColor: "border-secondary/30" },
+    { color: "text-accent", bgColor: "bg-accent/10", borderColor: "border-accent/30" },
+    { color: "text-primary", bgColor: "bg-primary/10", borderColor: "border-primary/30" },
+    { color: "text-secondary", bgColor: "bg-secondary/10", borderColor: "border-secondary/30" },
+    { color: "text-accent", bgColor: "bg-accent/10", borderColor: "border-accent/30" },
   ];
+  return styles[index % styles.length];
+};
 
-  // Categorize skills dynamically based on keywords
-  const categorizedSkills = skillCategories.map(cat => ({
-    ...cat,
-    skills: skills.filter(skill => 
-      cat.keywords.some(keyword => skill.toLowerCase().includes(keyword))
-    )
-  }));
-
-  // Get uncategorized skills
-  const categorizedSkillNames = categorizedSkills.flatMap(cat => cat.skills);
-  const additionalSkills = skills.filter(skill => !categorizedSkillNames.includes(skill)).slice(0, 8);
-
+export function SkillsSection({ skillCategories, isStandalone = false }: SkillsSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -99,9 +58,9 @@ export function SkillsSection({ skills, isStandalone = false }: SkillsSectionPro
             <div className="h-px flex-1 bg-gradient-to-l from-accent/50 to-transparent" />
           </div>
           {isStandalone ? (
-            <h1 className="text-4xl md:text-5xl font-bold text-center">Skills & Expertise</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-center">Skills</h1>
           ) : (
-            <h2 className="text-4xl md:text-5xl font-bold text-center">Skills & Expertise</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-center">Skills</h2>
           )}
           <p className="text-center text-muted-foreground mt-4 max-w-2xl mx-auto">
             A comprehensive toolkit spanning AI/ML, data architecture, and production engineering
@@ -114,10 +73,10 @@ export function SkillsSection({ skills, isStandalone = false }: SkillsSectionPro
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-6 mb-16"
+          className="grid md:grid-cols-2 gap-6"
         >
-          {categorizedSkills.map((category, index) => {
-            const Icon = category.icon;
+          {skillCategories.map((category, index) => {
+            const style = getCategoryStyle(index);
             return (
               <motion.div
                 key={index}
@@ -126,59 +85,32 @@ export function SkillsSection({ skills, isStandalone = false }: SkillsSectionPro
                 className="p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-all duration-300"
               >
                 <div className="flex items-center gap-3 mb-6">
-                  <div className={`w-12 h-12 rounded-xl ${category.bgColor} flex items-center justify-center`}>
-                    <Icon className={`w-6 h-6 ${category.color}`} />
+                  <div className={`w-12 h-12 rounded-xl ${style.bgColor} flex items-center justify-center border ${style.borderColor}`}>
+                    <span className={`text-lg font-bold ${style.color}`}>
+                      {category.category.charAt(0)}
+                    </span>
                   </div>
                   <h3 className="text-xl font-bold">{category.category}</h3>
                 </div>
                 
                 <div className="flex flex-wrap gap-2">
-                  {category.skills.length > 0 ? (
-                    category.skills.map((skill, skillIndex) => (
-                      <motion.span
-                        key={skillIndex}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: skillIndex * 0.05 }}
-                        viewport={{ once: true }}
-                        className="px-3 py-1.5 rounded-lg bg-muted text-sm font-medium border border-border/30 hover:border-primary/30 hover:text-primary transition-colors cursor-default"
-                      >
-                        {skill}
-                      </motion.span>
-                    ))
-                  ) : (
-                    <span className="text-sm text-muted-foreground italic">No skills in this category</span>
-                  )}
+                  {category.skills.map((skill, skillIndex) => (
+                    <motion.span
+                      key={skillIndex}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: skillIndex * 0.03 }}
+                      viewport={{ once: true }}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all cursor-default ${style.bgColor} ${style.borderColor} hover:${style.color}`}
+                    >
+                      {skill}
+                    </motion.span>
+                  ))}
                 </div>
               </motion.div>
             );
           })}
         </motion.div>
-
-        {/* Additional Skills */}
-        {additionalSkills.length > 0 && (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <h3 className="text-lg font-semibold mb-6 text-muted-foreground">Additional Expertise</h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              {additionalSkills.map((skill, index) => (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/30 hover:border-secondary/50 hover:text-secondary transition-all cursor-default"
-                >
-                  <span className="text-sm font-medium">{skill}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
       </div>
     </section>
   );

@@ -82,10 +82,10 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 ## PROJECTS
 
-**[AI Copilot for Manufacturing](https://github.com/Vibz28)**  
-- Leading the development of an AI copilot experience targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features agentic orchestration with LangGraph/LangChain and graph-based workflow engines deployed on AWS.
+**[Deviation Assistant](https://github.com/bms-corp/deviation-copilot)**  
+- Leading the architecture development of an AI agent solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features agentic orchestration with LangGraph/LangChain and graph-based agentic tools deployed on AWS.
 
-**[Batch Genealogy Data Product (BGDP)](https://github.com/Vibz28)**  
+**[Batch Genealogy Data Product (BGDP)](https://github.com/bms-corp/gps-batch-genealogy)**  
 - Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.
 
 **[Microplate Classification System](https://github.com/Vibz28)**  
