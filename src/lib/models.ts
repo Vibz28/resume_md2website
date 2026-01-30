@@ -1,8 +1,13 @@
 export interface Profile {
   name: string;
   title: string;
+  headline: string;
   bio: string;
   skills: string[];
+  highlights: Array<{
+    value: string;
+    label: string;
+  }>;
   contacts: Array<{
     label: string;
     url: string;

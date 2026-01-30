@@ -3,6 +3,17 @@
 
 [vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com) | (765)-637-1295 | [linkedin.com/in/vibhorjaney](https://www.linkedin.com/in/vibhorjaney/) | East Brunswick, NJ
 
+**Headline:** Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.
+
+---
+
+## HIGHLIGHTS
+
+- **5,000+** Active Users impacted by AI copilot systems
+- **6+** Years of professional experience in AI/ML
+- **40%** Efficiency gain achieved through data architecture improvements
+- **98.59%** Computer Vision accuracy on microplate classification
+
 ---
 
 ## WORK EXPERIENCE

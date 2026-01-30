@@ -374,6 +374,12 @@ export function parseResumeMarkdown(): ParsedContent {
     const name = lines[0].replace('# ', '').trim();
     const title = lines[1].replace(/\*\*/g, '').trim();
     
+    // Extract headline
+    const headlineLine = lines.find(line => line.startsWith('**Headline:**'));
+    const headline = headlineLine 
+      ? headlineLine.replace('**Headline:**', '').trim()
+      : `${name} — ${title}`;
+    
     // Extract contact information
     const contactLine = lines.find(line => line.includes('mailto:'));
     const contacts = [];
@@ -389,7 +395,21 @@ export function parseResumeMarkdown(): ParsedContent {
       }
     }
 
-
+    // Parse highlights
+    const highlights: Array<{value: string, label: string}> = [];
+    const highlightsSection = content.match(/## HIGHLIGHTS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+    if (highlightsSection) {
+      const highlightLines = highlightsSection[1].split('\n').filter(line => line.trim().startsWith('- '));
+      highlightLines.forEach(line => {
+        const match = line.match(/- \*\*([^*]+)\*\*\s*(.+)/);
+        if (match) {
+          highlights.push({
+            value: match[1].trim(),
+            label: match[2].trim()
+          });
+        }
+      });
+    }
 
     // Parse skills
     const skills = parseSkills(content);
@@ -401,8 +421,10 @@ export function parseResumeMarkdown(): ParsedContent {
     const profile: Profile = {
       name,
       title,
+      headline,
       bio,
       skills: skills.slice(0, 15), // Get more skills for better display
+      highlights,
       contacts
     };
 
@@ -436,8 +458,15 @@ export function parseResumeMarkdown(): ParsedContent {
       profile: {
         name: 'Vibhor Janey',
         title: 'AI Solution Architect',
+        headline: 'Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.',
         bio: 'Experienced AI Solution Architect specializing in manufacturing and healthcare AI applications.\n\nCurrently serving as Senior Manager of AI Solution Architect at Bristol Myers Squibb, leading development of AI copilot experiences for manufacturing operations.',
         skills: ['AI Architecture', 'Machine Learning', 'Data Engineering', 'Python', 'Next.js', 'React'],
+        highlights: [
+          { value: '5,000+', label: 'Active Users' },
+          { value: '6+', label: 'Years Experience' },
+          { value: '40%', label: 'Efficiency Gain' },
+          { value: '98.59%', label: 'CV Accuracy' }
+        ],
         contacts: [
           { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
           { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vibhorjaney/' }

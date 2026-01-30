@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <HeroSimple />
+      <HeroSimple profile={profile} />
 
       {/* About Section */}
       <AboutSection profile={profile} />
