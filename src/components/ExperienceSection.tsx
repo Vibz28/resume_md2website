@@ -1,8 +1,7 @@
 "use client";
+
 import { motion } from 'framer-motion';
-import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
-import { Building2, Calendar, MapPin } from 'lucide-react';
+import { Building2, Calendar, MapPin, ArrowUpRight } from 'lucide-react';
 
 export function ExperienceSection() {
   const experiences = [
@@ -19,7 +18,8 @@ export function ExperienceSection() {
         "Building pipelines to identify, document, and perform RCA on deviations, auto-generate CAPA drafts (HITL)",
         "Implementing LLM observability and tracing layer for generation traceability, prompt versioning, and end-to-end visibility testing"
       ],
-      technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP", "LangFuse"]
+      technologies: ["LangGraph", "LangChain", "AWS Bedrock", "Docker", "MCP", "LangFuse"],
+      highlight: true
     },
     {
       title: "Manager, Data Architecture",
@@ -34,7 +34,8 @@ export function ExperienceSection() {
         "Integrated BGDP with SAP Batch Release Hub under the APMC program, improved release decision efficiency by >50%",
         "Launched a metadata cataloging initiative for the manufacturing data lake, aligning business and technical metadata across 7+ source integrations"
       ],
-      technologies: ["SAP", "Oracle EBS", "AWS", "Graph Databases", "SQL", "Python"]
+      technologies: ["SAP", "Oracle EBS", "AWS", "Graph Databases", "SQL", "Python"],
+      highlight: false
     },
     {
       title: "Machine Learning Specialist",
@@ -42,14 +43,15 @@ export function ExperienceSection() {
       location: "Bedford, MA",
       duration: "Jun 2022 - Aug 2022",
       type: "Contract",
-      description: "Developed high-accuracy computer vision solutions for laboratory automation, achieving 98.59% classification accuracy while optimizing models for edge deployment and conducting analytical insights.",
+      description: "Developed high-accuracy computer vision solutions for laboratory automation, achieving 98.59% classification accuracy while optimizing models for edge deployment.",
       achievements: [
         "Built a computer vision model to classify microplates for the FAST Liquid Handler, achieving 98.59% accuracy",
         "Implemented in TensorFlow using Classification-by-Retrieval (CbR) methodology",
         "Created an API configuration for image capture and curated labeled datasets under varied conditions",
         "Tested inference on Raspberry Pi Zero & Coral Edge TPU for edge deployment optimization"
       ],
-      technologies: ["TensorFlow", "Python", "OpenCV", "Raspberry Pi", "Edge TPU", "R"]
+      technologies: ["TensorFlow", "Python", "OpenCV", "Raspberry Pi", "Edge TPU", "R"],
+      highlight: false
     },
     {
       title: "Software Engineer", 
@@ -57,110 +59,158 @@ export function ExperienceSection() {
       location: "Kennesaw, GA",
       duration: "Oct 2019 - Jun 2021",
       type: "Full-time",
-      description: "Led front-end development and UX design for new product launches while contributing to advanced analytics solutions including anomaly detection models and banking branch management systems.",
+      description: "Led front-end development and UX design for new product launches while contributing to advanced analytics solutions including anomaly detection models.",
       achievements: [
         "Led the front-end design team for a new product launch; redesigned UX in Figma/Adobe XD and implemented with React",
         "Collaborated to deploy an anomaly detection model in Python combining a boxplot method with FBProphet",
-        "Contributed to the inception and design of a new banking branch management product",
-        "Improved user experience and interface design across multiple product lines"
+        "Contributed to the inception and design of a new banking branch management product"
       ],
-      technologies: ["React", "Python", "Figma", "Adobe XD", "FBProphet", "JavaScript"]
+      technologies: ["React", "Python", "Figma", "Adobe XD", "FBProphet", "JavaScript"],
+      highlight: false
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -30 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut" as const }
+    }
+  };
+
   return (
-    <section id="experience" className="py-20">
+    <section id="experience" className="py-24 bg-charcoal-light relative">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            My journey through the AI industry, from research to production-scale implementations
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-px flex-1 bg-gradient-to-r from-secondary/50 to-transparent" />
+            <span className="font-mono text-sm text-secondary">02</span>
+            <div className="h-px flex-1 bg-gradient-to-l from-secondary/50 to-transparent" />
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-center">Experience</h2>
+          <p className="text-center text-muted-foreground mt-4 max-w-2xl mx-auto">
+            A journey through AI architecture, from research prototypes to production systems serving thousands
           </p>
         </motion.div>
 
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-border transform md:-translate-x-0.5"></div>
+        {/* Timeline */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="relative"
+        >
+          {/* Timeline Line */}
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-secondary to-accent hidden md:block" />
 
           <div className="space-y-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                viewport={{ once: true }}
-                className={`relative grid md:grid-cols-2 gap-8 items-center ${
-                  index % 2 === 0 ? 'md:text-right' : 'md:text-left'
-                }`}
+                variants={itemVariants}
+                className={`relative grid md:grid-cols-2 gap-8 ${index % 2 === 0 ? '' : 'md:text-right'}`}
               >
-                {/* Timeline dot */}
-                <div className="absolute left-4 md:left-1/2 w-4 h-4 bg-primary rounded-full transform -translate-x-2 md:-translate-x-2 border-4 border-background z-10"></div>
+                {/* Timeline Dot */}
+                <div className={`absolute left-8 md:left-1/2 w-4 h-4 rounded-full transform -translate-x-1/2 z-10 ${
+                  exp.highlight 
+                    ? 'bg-primary shadow-lg shadow-primary/50' 
+                    : 'bg-muted border-2 border-border'
+                }`}>
+                  {exp.highlight && (
+                    <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-20" />
+                  )}
+                </div>
 
-                {/* Content */}
-                <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? 'md:order-1' : 'md:order-2'}`}>
-                  <Card className="p-6 hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-                    <CardContent className="p-0 space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          <span>{exp.duration}</span>
-                          <Badge variant="outline" className="ml-2">{exp.type}</Badge>
-                        </div>
-                        
-                        <h3 className="text-xl font-bold text-primary">{exp.title}</h3>
-                        
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Building2 className="h-4 w-4" />
-                          <span>{exp.company}</span>
-                        </div>
-                        
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <MapPin className="h-4 w-4" />
-                          <span>{exp.location}</span>
-                        </div>
-                      </div>
+                {/* Content Card */}
+                <div className={`ml-16 md:ml-0 ${index % 2 === 0 ? 'md:order-1 md:pr-12' : 'md:order-2 md:pl-12'}`}>
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    className={`p-6 rounded-2xl border transition-all duration-300 ${
+                      exp.highlight 
+                        ? 'bg-card border-primary/30 shadow-lg shadow-primary/5' 
+                        : 'bg-card/50 border-border/50 hover:border-border'
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                      <span className="px-2 py-1 rounded bg-muted text-xs font-mono text-muted-foreground">
+                        {exp.duration}
+                      </span>
+                      {exp.highlight && (
+                        <span className="px-2 py-1 rounded bg-primary/10 text-xs font-mono text-primary">
+                          Current
+                        </span>
+                      )}
+                    </div>
 
-                      <p className="text-muted-foreground">{exp.description}</p>
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                      {exp.title}
+                    </h3>
+                    
+                    <div className={`flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4 ${index % 2 === 1 ? 'md:justify-end' : ''}`}>
+                      <span className="flex items-center gap-1">
+                        <Building2 className="w-4 h-4" />
+                        {exp.company}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" />
+                        {exp.location}
+                      </span>
+                    </div>
 
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">Key Achievements:</h4>
-                        <ul className="space-y-1 text-sm text-muted-foreground">
-                          {exp.achievements.map((achievement, i) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <span className="text-primary mt-1">•</span>
-                              <span>{achievement}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                    <p className="text-muted-foreground mb-4 leading-relaxed">
+                      {exp.description}
+                    </p>
 
-                      <div className="space-y-2">
-                        <h4 className="font-semibold">Technologies:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {exp.technologies.map((tech) => (
-                            <Badge key={tech} variant="secondary" className="text-xs">
-                              {tech}
-                            </Badge>
-                          ))}
+                    {/* Achievements */}
+                    <div className="space-y-2 mb-4">
+                      {exp.achievements.slice(0, 3).map((achievement, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm">
+                          <ArrowUpRight className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span className="text-muted-foreground">{achievement}</span>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      ))}
+                    </div>
+
+                    {/* Technologies */}
+                    <div className={`flex flex-wrap gap-2 ${index % 2 === 1 ? 'md:justify-end' : ''}`}>
+                      {exp.technologies.map((tech) => (
+                        <span 
+                          key={tech} 
+                          className="px-2 py-1 rounded-lg bg-muted text-xs font-mono border border-border/30"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
                 </div>
 
                 {/* Spacer for timeline alignment */}
-                <div className={`hidden md:block ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}></div>
+                <div className={`hidden md:block ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`} />
               </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
