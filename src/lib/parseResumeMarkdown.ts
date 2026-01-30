@@ -92,7 +92,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
         if (!line) continue; // Skip empty lines
         
         // Check if this is a position title line (format: _**Title**_)
-        if (line.match(/^ _\*\*([^*]+)\*\*_$/)) {
+        if (line.match(/^_\*\*([^*]+)\*\*_$/)) {
           // Save previous position if exists and is valid
           if (currentPosition && isValidPosition(currentPosition, bulletPoints)) {
             currentPosition.achievements = bulletPoints
@@ -103,7 +103,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
           }
           
           // Start new position
-          const titleMatch = line.match(/^ _\*\*([^*]+)\*\*_$/);
+          const titleMatch = line.match(/^_\*\*([^*]+)\*\*_$/);
           if (titleMatch && titleMatch[1]?.trim()) {
             currentPosition = {
               employer,
@@ -152,7 +152,7 @@ function parseWorkExperience(content: string): ExperienceEntry[] {
             
             // Stop if we hit another bullet point or section marker
             if (nextLine.startsWith('- ') || 
-                nextLine.match(/^ _\*\*([^*]+)\*\*_$/) ||
+                nextLine.match(/^_\*\*([^*]+)\*\*_$/) ||
                 nextLine.match(/^\*([^*]+)\*$/) ||
                 nextLine.match(/^\*\*Summary:\*\*/)) {
               break;
@@ -376,9 +376,7 @@ export function parseResumeMarkdown(): ParsedContent {
     
     // Extract headline
     const headlineLine = lines.find(line => line.startsWith('**Headline:**'));
-    const headline = headlineLine 
-      ? headlineLine.replace('**Headline:**', '').trim()
-      : `${name} — ${title}`;
+    const headline = headlineLine ? headlineLine.replace('**Headline:**', '').trim() : `${name} — ${title}`;
     
     // Extract contact information
     const contactLine = lines.find(line => line.includes('mailto:'));
