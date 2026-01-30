@@ -7,10 +7,10 @@ import { ContactForm } from '@/components/ContactForm';
 import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
 
 export default function Home() {
-  const { profile, projects } = parseResumeMarkdown();
+  const { profile, experience, projects } = parseResumeMarkdown();
 
   return (
-    <div className="min-h-screen bg-charcoal text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <HeroSimple />
 
@@ -18,13 +18,13 @@ export default function Home() {
       <AboutSection profile={profile} />
 
       {/* Experience Section */}
-      <ExperienceSection />
+      <ExperienceSection experience={experience} />
 
       {/* Projects Section */}
       <ProjectsSection projects={projects} />
 
       {/* Skills Section */}
-      <SkillsSection />
+      <SkillsSection skills={profile.skills} />
 
       {/* Contact Section */}
       <ContactForm />

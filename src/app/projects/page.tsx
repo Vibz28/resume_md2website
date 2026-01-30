@@ -1,3 +1,4 @@
+import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
 import { ProjectsSection } from '@/components/ProjectsSection';
 
 export const metadata = {
@@ -6,9 +7,11 @@ export const metadata = {
 };
 
 export default function ProjectsPage() {
+  const { projects } = parseResumeMarkdown();
+  
   return (
     <div className="bg-background text-foreground">
-      <ProjectsSection />
+      <ProjectsSection projects={projects} />
     </div>
   );
 }
