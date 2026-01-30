@@ -74,7 +74,7 @@ Aug 2015 – May 2019 | West Lafayette, IN
 **Architectures:** Agentic Orchestration, Graph-based Workflows, Deep Agents, MCP Tool Declarations, RAG, Graph RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation
 **LLMOps:** Prompt Versioning, Thread Tracing, Quality Metrics, Evaluators, LLM-as-a-judge, LangSmith, ClickHouse
 **Data and Knowledge:** Semantic Knowledge Bases, Decision-logic Capture (Mermaid), Vector Indexing, Document Lineage, Text-to-SQL
-**Cloud DevOps:** AWS Bedrock, AWS SageMaker AI, AWS ECS Fargate, AWS S3, AWS Athena, AWS Glue, IAM
+**Cloud DevOps:** AWS Bedrock, AWS SageMaker AI, AWS ECS Fargate, AWS Neptune, AWS Neptune Analytics, AWS S3, AWS Athena, AWS Glue, IAM, Postgres, Redis, DynamoDB
 **Programming:** Python, LangGraph, LangChain, NumPy, Pandas, scikit-learn, Pydantic, FastAPI, Matplotlib, boto3, Streamlit, SQL, React
 **ML/Analytics:** Data Modeling, Statistical Modeling, ML, Deep Learning, Graph Analytics, NLP, Computer Vision, Time-series Analysis
 

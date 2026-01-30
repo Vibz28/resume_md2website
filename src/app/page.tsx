@@ -7,12 +7,13 @@ import { ContactForm } from '@/components/ContactForm';
 import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
 
 export default function Home() {
-  const { profile, experience, projects } = parseResumeMarkdown();
+  const resumeData = parseResumeMarkdown();
+  const { profile, experience, projects } = resumeData;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <HeroSimple profile={profile} />
+      <HeroSimple profile={profile} resumeData={resumeData} />
 
       {/* About Section */}
       <AboutSection profile={profile} />

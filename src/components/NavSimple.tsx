@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Github, Linkedin, Mail, Menu, X } from 'lucide-react';
 import { downloadResumePDF } from '@/lib/pdfGenerator';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import type { ParsedContent } from '@/lib/models';
 
 const navigationItems = [
   { name: 'About', href: '#about', number: '01' },
@@ -14,7 +15,11 @@ const navigationItems = [
   { name: 'Contact', href: '#contact', number: '05' },
 ];
 
-export function NavSimple() {
+interface NavSimpleProps {
+  resumeData: ParsedContent;
+}
+
+export function NavSimple({ resumeData }: NavSimpleProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -109,7 +114,7 @@ export function NavSimple() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => downloadResumePDF()}
+                  onClick={() => downloadResumePDF(resumeData)}
                   className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium text-sm hover:bg-primary/90 transition-colors"
                 >
                   <Download className="w-4 h-4" />
@@ -169,7 +174,7 @@ export function NavSimple() {
                 <button
                   onClick={() => {
                     setIsOpen(false);
-                    downloadResumePDF();
+                    downloadResumePDF(resumeData);
                   }}
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-lg font-medium"
                 >

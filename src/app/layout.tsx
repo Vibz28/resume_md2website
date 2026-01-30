@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { NavSimple } from '@/components/NavSimple'
 import { SkipNavigation } from '@/components/SkipNavigation'
+import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown'
 
 export const metadata: Metadata = {
   title: 'Vibhor Janey — AI Solution Architect',
@@ -13,12 +14,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Parse resume data on server to pass to components
+  const resumeData = parseResumeMarkdown()
+  
   return (
     <html lang="en">
       <body className="min-h-screen bg-background text-foreground antialiased">
         <SkipNavigation />
         <header>
-          <NavSimple />
+          <NavSimple resumeData={resumeData} />
         </header>
         <main id="main-content" role="main">{children}</main>
         <footer className="border-t border-border bg-muted/30" role="contentinfo">

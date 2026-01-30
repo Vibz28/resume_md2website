@@ -1,6 +1,6 @@
 "use client";
 
-import type { Profile } from '@/lib/models';
+import type { Profile, ParsedContent } from '@/lib/models';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Download, ArrowDown, Terminal, Cpu, Network } from 'lucide-react';
@@ -8,9 +8,10 @@ import { downloadResumePDF } from '@/lib/pdfGenerator';
 
 interface HeroSimpleProps {
   profile: Profile;
+  resumeData: ParsedContent;
 }
 
-export function HeroSimple({ profile }: HeroSimpleProps) {
+export function HeroSimple({ profile, resumeData }: HeroSimpleProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -151,7 +152,7 @@ export function HeroSimple({ profile }: HeroSimpleProps) {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => downloadResumePDF()}
+                onClick={() => downloadResumePDF(resumeData)}
                 className="group flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg hover:bg-primary/90 transition-all glow-cyan"
               >
                 <Download className="w-5 h-5 group-hover:animate-bounce" />
