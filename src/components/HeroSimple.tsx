@@ -245,7 +245,7 @@ export function HeroSimple({ profile, resumeData }: HeroSimpleProps) {
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute -top-4 -right-4 px-4 py-2 bg-secondary text-secondary-foreground rounded-lg font-mono text-xs shadow-lg"
                 >
-                  {profile.highlights[3].value} {profile.highlights[3].label.split(' ')[0]}
+                  98.59% Accuracy
                 </motion.div>
               )}
               <motion.div 
@@ -253,7 +253,7 @@ export function HeroSimple({ profile, resumeData }: HeroSimpleProps) {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 className="absolute -bottom-4 -left-4 px-4 py-2 bg-accent text-accent-foreground rounded-lg font-mono text-xs shadow-lg"
               >
-                {profile.skills && profile.skills.find(s => s.includes('Lang')) ? 'MCP Protocol' : 'AI/ML Expert'}
+                MCP Connected
               </motion.div>
             </div>
           </motion.div>
