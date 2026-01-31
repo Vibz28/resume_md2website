@@ -12,8 +12,6 @@ out/
 
 # TypeScript
 *.tsbuildinfo
-next-env.d.ts
-tsconfig.json
 
 # IDE/Editor files
 .vscode/
