@@ -1,7 +1,18 @@
 # Vibhor Janey
 **AI Solution Architect**
 
-[vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com) | (765)-637-1295 | [linkedin.com/in/vibhorjaney](https://www.linkedin.com/in/vibhorjaney/) | East Brunswick, NJ
+[vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com) | (765)-637-1295 | [linkedin.com/in/vibhorjaney](https://www.linkedin.com/in/vibhorjaney/) | [github.com/Vibz28](https://github.com/Vibz28) | East Brunswick, NJ
+
+**Headline:** Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.
+
+---
+
+## HIGHLIGHTS
+
+- **5,000+** Active Users impacted by AI copilot systems
+- **6+** Years of professional experience in AI/ML
+- **40%** Efficiency gain achieved through data architecture improvements
+- **98.59%** Computer Vision accuracy on microplate classification
 
 ---
 
@@ -60,18 +71,51 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 ## SKILLS
 
-**Architectures:** Agentic Orchestration, Graph-based Workflows (LangGraph/LangChain), MCP Tool Declarations, RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation.
-**LLMOps:** Prompt Versioning, Generation Tracing, Quality Metrics, LangFuse, ClickHouse.
-**Data and Knowledge:** Semantic Knowledge Bases, Decision-logic Capture (Mermaid), Vector Indexing, Document Lineage, Text-to-SQL.
-**Cloud Platforms (AWS):** Managed LLM services (Bedrock, SageMaker AI), Guardrails, Containerization (Docker), Serverless/Workflow orchestration (ECS), Object Storage (S3), Data Lake Query Engines (Athena, Glue), Identity and Access (IAM).
-**Programming:** Python (NumPy, Pandas, scikit-learn, Pydantic, FastAPI, Matplotlib, boto3, strands-agents, Streamlit), SQL, React.
-**ML/Analytics:** Data Modeling, Statistical Modeling, ML, Deep Learning, Graph Analytics, NLP, Computer Vision, Time-series Analysis.
+**Agentic Architecture:** Agentic Orchestration, Graph-based Workflows, Deep Agents, MCP Tool Declarations, Retrieval Augmented Generation (RAG), Graph RAG, Event-driven Pipelines, HITL Review, RCA/CAPA Automation, GxP Validation
+**Programming:** Python, LangGraph, LangChain, NumPy, Pandas, scikit-learn, Pydantic, FastAPI, Matplotlib, boto3, Streamlit, SQL, React
+**Cloud DevOps:** AWS Bedrock, AWS SageMaker AI, AWS ECS Fargate, Docker, Kubernetes, AWS Lambda, AWS Neptune, AWS Neptune Analytics, AWS S3, AWS Athena, AWS Glue, AWS ALB, Postgres, Redis, DynamoDB
+**Data Architecture and Knowledge Management:** Semantic Knowledge Bases, Semantic Indexing, BM25 Keyword Search, Process Knowledge Graphs, Document Lineage, Text-to-SQL, Decision-logic Capture, SAP S/4HANA, Manufacturing Execution System (MES), Veeva QMS
+**ML/Analytics:** Data Modeling, Statistical Modeling, ML, Deep Learning, Graph Analytics, NLP, Computer Vision, Time-series Analysis
+**LLMOps:** Prompt Versioning, Thread Tracing, Quality Metrics, Evaluators, LLM-as-a-judge, LangSmith, ClickHouse
 
 ---
 
 ## PROJECTS
 
+**[Deviation Assistant](https://github.com/bms-corp/deviation-copilot)**  
+**Category:** Manufacturing Quality AI  
+**Metrics:** 5000+ users, Agentic orchestration, GxP compliance  
+**Technologies:** LangGraph, LangChain, AWS Bedrock, Docker, MCP, Graph Workflows  
+- Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.
+
+**[Batch Genealogy Data Product (BGDP)](https://github.com/bms-corp/gps-batch-genealogy)**  
+**Category:** Data Architecture  
+**Metrics:** 40%+ time reduction, 50% efficiency improvement, 7+ integrations  
+**Technologies:** SAP, Oracle EBS, Graph Databases, AWS, Python, SQL  
+- Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.
+
+**[Microplate Classification System](https://github.com/Vibz28)**  
+**Category:** Laboratory Automation  
+**Metrics:** 98.59% accuracy, Edge deployment, Lab automation  
+**Technologies:** TensorFlow, Computer Vision, OpenCV, Raspberry Pi, Edge TPU, Python  
+- Built a computer vision model to classify microplates for the FAST Liquid Handler at Formulatrix, achieving 98.59% accuracy using TensorFlow and Classification-by-Retrieval (CbR) methodology. Optimized for edge deployment on Raspberry Pi and Coral Edge TPU.
+
+**[Banking Branch Management System](https://github.com/Vibz28)**  
+**Category:** Development  
+**Metrics:** Product design, UX implementation, Full-stack  
+**Technologies:** React, Figma, Adobe XD, UX Design, Frontend  
+- Contributed to the inception and design of a new banking branch management product at Zebra Technologies, focusing on UX design in Figma/Adobe XD and front-end implementation with React.
+
+**[Anomaly Detection Engine](https://github.com/Vibz28)**  
+**Category:** Predictive Analytics  
+**Metrics:** Time series forecasting, Statistical analysis, Production deployment  
+**Technologies:** Python, FBProphet, Statistical Analysis, Time Series, Anomaly Detection  
+- Deployed an anomaly detection model combining boxplot methodology with FBProphet for time series forecasting and outlier identification in banking analytics.
+
 **[Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)](https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi)**  
+**Category:** Agricultural AI  
+**Metrics:** Few-shot learning, Agricultural application, Published research  
+**Technologies:** PyTorch, Few-Shot Learning, Prototypical Networks, Computer Vision, Python  
 - Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples; trained on data from Li et al., *Crop pest recognition in natural scenes using convolutional neural networks*.
 
 ---
@@ -80,4 +124,3 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 **Steve Hoberman's Live Online Data Modeling Master Class** — Technics Publications  
 Dec 2024
-

@@ -7,11 +7,11 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  const { profile } = parseResumeMarkdown();
+  const { profile, education } = parseResumeMarkdown();
 
   return (
-    <div className="bg-white">
-      <AboutSection profile={profile} isStandalone={true} />
+    <div className="bg-background text-foreground">
+      <AboutSection profile={profile} education={education} isStandalone={true} />
     </div>
   );
 }

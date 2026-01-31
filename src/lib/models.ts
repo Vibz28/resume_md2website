@@ -1,8 +1,19 @@
+export interface SkillCategory {
+  category: string;
+  skills: string[];
+}
+
 export interface Profile {
   name: string;
   title: string;
+  headline: string;
   bio: string;
   skills: string[];
+  skillCategories: SkillCategory[];
+  highlights: Array<{
+    value: string;
+    label: string;
+  }>;
   contacts: Array<{
     label: string;
     url: string;
@@ -22,6 +33,9 @@ export interface Project {
   title: string;
   description: string;
   link?: string;
+  category?: string;
+  metrics?: string[];
+  technologies?: string[];
 }
 
 export interface Publication {
@@ -33,9 +47,24 @@ export interface Publication {
   category?: string;
 }
 
+export interface Education {
+  institution: string;
+  degree: string;
+  timeframe: string;
+  location: string;
+}
+
+export interface Course {
+  title: string;
+  institution: string;
+  date: string;
+}
+
 export interface ParsedContent {
   profile: Profile;
   experience: ExperienceEntry[];
+  education: Education[];
   projects: Project[];
+  courses: Course[];
   publications: Publication[];
 }

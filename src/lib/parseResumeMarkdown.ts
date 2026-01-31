@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { ParsedContent, Profile, ExperienceEntry, Project, Publication } from './models';
+import type { ParsedContent, Profile, ExperienceEntry, Project, Publication, Education, Course } from './models';
 
 // Cache for parsed markdown text to avoid re-processing
 const markdownCache = new Map<string, string>();
@@ -239,35 +239,66 @@ function isValidTimeframe(timeframe: string): boolean {
 function parseProjects(content: string): Project[] {
   const projects: Project[] = [];
   
-  const projectsSection = content.match(/## PROJECTS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const projectsSection = content.match(/## PROJECTS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
   if (!projectsSection) return projects;
   
   const projectText = projectsSection[1];
   
-  // Look for **[Title](Link)** pattern
-  const projectMatches = projectText.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*\s*\n-\s*([^\n]+)/g);
+  // Split by double newlines to get individual project blocks
+  const projectBlocks = projectText.split(/\n\n+/).filter(block => block.trim());
   
-  if (projectMatches) {
-    for (const match of projectMatches) {
-      const parsed = match.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*\s*\n-\s*([^\n]+)/);
-      if (parsed) {
-        projects.push({
-          title: parsed[1].trim(),
-          description: parsed[3].trim(),
-          link: parsed[2].trim()
-        });
+  for (const block of projectBlocks) {
+    // Match **[Title](Link)** pattern
+    const titleMatch = block.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/);
+    if (!titleMatch) continue;
+    
+    const title = titleMatch[1].trim();
+    const link = titleMatch[2].trim();
+    
+    // Parse additional fields
+    const lines = block.split('\n');
+    let description = '';
+    let category = '';
+    let metrics: string[] = [];
+    let technologies: string[] = [];
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.startsWith('**Category:**')) {
+        category = trimmedLine.replace(/\*\*Category:\*\*/, '').trim();
+      } else if (trimmedLine.startsWith('**Metrics:**')) {
+        const metricsText = trimmedLine.replace(/\*\*Metrics:\*\*/, '').trim();
+        metrics = metricsText.split(',').map(m => m.trim()).filter(m => m.length > 0);
+      } else if (trimmedLine.startsWith('**Technologies:**')) {
+        const techText = trimmedLine.replace(/\*\*Technologies:\*\*/, '').trim();
+        technologies = techText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      } else if (trimmedLine.startsWith('- ')) {
+        description = trimmedLine.substring(2).trim();
       }
+    }
+    
+    if (title && description) {
+      projects.push({
+        title,
+        description,
+        link,
+        category,
+        metrics,
+        technologies
+      });
     }
   }
   
   return projects;
 }
 
-function parseSkills(content: string): string[] {
-  const skills: string[] = [];
+function parseSkills(content: string): { allSkills: string[]; categories: Array<{category: string; skills: string[]}> } {
+  const allSkills: string[] = [];
+  const categories: Array<{category: string; skills: string[]}> = [];
   
-  const skillsSection = content.match(/## SKILLS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
-  if (!skillsSection) return skills;
+  const skillsSection = content.match(/## SKILLS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!skillsSection) return { allSkills, categories };
   
   const skillsText = skillsSection[1];
   const skillLines = skillsText.split('\n').filter(line => line.startsWith('**'));
@@ -275,18 +306,115 @@ function parseSkills(content: string): string[] {
   skillLines.forEach(line => {
     const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
-      const skillsInLine = line.substring(colonIndex + 1).split(',');
-      skills.push(...skillsInLine.map(s => s.trim()).filter(s => s && !s.startsWith('**')));
+      const categoryName = line.substring(2, colonIndex).replace(/\*\*/g, '').trim();
+      // Get content after colon and split by comma
+      const skillsContent = line.substring(colonIndex + 1).trim();
+      const skillsInLine = skillsContent.split(',');
+      // Filter out empty strings, trim, and remove any "**" markdown formatting
+      const categorySkills = skillsInLine
+        .map(s => s.trim().replace(/^\*\*\s*/, '').replace(/\*\*$/, ''))
+        .filter(s => s && s.length > 0);
+      
+      if (categoryName && categorySkills.length > 0) {
+        categories.push({
+          category: categoryName,
+          skills: categorySkills
+        });
+        allSkills.push(...categorySkills);
+      }
     }
   });
   
-  return skills;
+  return { allSkills, categories };
+}
+
+function parseEducation(content: string): Education[] {
+  const education: Education[] = [];
+  
+  const educationSection = content.match(/## EDUCATION\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!educationSection) return education;
+  
+  const educationText = educationSection[1];
+  
+  // Split by double newlines to get individual education entries
+  const eduBlocks = educationText.split(/\n\n+/).filter(block => block.trim());
+  
+  for (const block of eduBlocks) {
+    const lines = block.split('\n').filter(line => line.trim());
+    if (lines.length === 0) continue;
+    
+    // Parse first line: **Institution** — *Degree*
+    const firstLine = lines[0];
+    const institutionMatch = firstLine.match(/^\*\*([^*]+)\*\*\s*—\s*\*([^*]+)\*/);
+    if (!institutionMatch) continue;
+    
+    const institution = institutionMatch[1].trim();
+    const degree = institutionMatch[2].trim();
+    
+    // Parse second line: Timeframe | Location
+    let timeframe = '';
+    let location = '';
+    if (lines.length > 1) {
+      const secondLine = lines[1];
+      const parts = secondLine.split('|').map(p => p.trim());
+      timeframe = parts[0] || '';
+      location = parts[1] || '';
+    }
+    
+    education.push({
+      institution,
+      degree,
+      timeframe,
+      location
+    });
+  }
+  
+  return education;
+}
+
+function parseCourses(content: string): Course[] {
+  const courses: Course[] = [];
+  
+  const coursesSection = content.match(/## COURSES\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+  if (!coursesSection) return courses;
+  
+  const coursesText = coursesSection[1];
+  
+  // Split by double newlines to get individual course entries
+  const courseBlocks = coursesText.split(/\n\n+/).filter(block => block.trim());
+  
+  for (const block of courseBlocks) {
+    const lines = block.split('\n').filter(line => line.trim());
+    if (lines.length === 0) continue;
+    
+    // Parse first line: **Title** — Institution
+    const firstLine = lines[0];
+    const titleMatch = firstLine.match(/^\*\*([^*]+)\*\*\s*—\s*(.+)$/);
+    if (!titleMatch) continue;
+    
+    const title = titleMatch[1].trim();
+    const institution = titleMatch[2].trim();
+    
+    // Parse second line: Date
+    let date = '';
+    if (lines.length > 1) {
+      date = lines[1].trim();
+    }
+    
+    courses.push({
+      title,
+      institution,
+      date
+    });
+  }
+  
+  return courses;
 }
 
 function parsePublications(content: string): Publication[] {
   const publications: Publication[] = [];
   
-  const publicationsSection = content.match(/## PUBLICATIONS\n\n([\s\S]*?)(?=\n---|\n##|$)/);
+  const publicationsSection = content.match(/## PUBLICATIONS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
   if (!publicationsSection) return publications;
   
   const publicationsText = publicationsSection[1];
@@ -359,25 +487,67 @@ export function parseResumeMarkdown(): ParsedContent {
     const name = lines[0].replace('# ', '').trim();
     const title = lines[1].replace(/\*\*/g, '').trim();
     
+    // Extract headline
+    const headlineLine = lines.find(line => line.startsWith('**Headline:**'));
+    const headline = headlineLine ? headlineLine.replace('**Headline:**', '').trim() : `${name} — ${title}`;
+    
     // Extract contact information
     const contactLine = lines.find(line => line.includes('mailto:'));
     const contacts = [];
     if (contactLine) {
+      // Email
       const emailMatch = contactLine.match(/\[([^\]]+)\]\(mailto:([^)]+)\)/);
       if (emailMatch) {
         contacts.push({ label: 'Email', url: `mailto:${emailMatch[2]}` });
       }
       
+      // Phone - match pattern like (765)-637-1295
+      const phoneMatch = contactLine.match(/\(?\d{3}\)?[-.]?\d{3}[-.]?\d{4}/);
+      if (phoneMatch) {
+        const phone = phoneMatch[0].replace(/\D/g, '');
+        contacts.push({ label: 'Phone', url: `tel:${phone}` });
+      }
+      
+      // LinkedIn
       const linkedinMatch = contactLine.match(/\[([^\]]+)\]\(https:\/\/[^)]*linkedin[^)]*\)/);
       if (linkedinMatch) {
         contacts.push({ label: 'LinkedIn', url: linkedinMatch[0].match(/https:\/\/[^)]*/)?.[0] || '' });
       }
+      
+      // GitHub
+      const githubMatch = contactLine.match(/\[([^\]]+)\]\(https:\/\/[^)]*github[^)]*\)/);
+      if (githubMatch) {
+        contacts.push({ label: 'GitHub', url: githubMatch[0].match(/https:\/\/[^)]*/)?.[0] || '' });
+      }
+      
+      // Location - text after LinkedIn or at end of line
+      const locationMatch = contactLine.match(/\|\s*([^|]+)$/);
+      if (locationMatch) {
+        const location = locationMatch[1].trim();
+        if (location && !location.includes('linkedin') && !location.includes('@')) {
+          contacts.push({ label: 'Location', url: `https://maps.google.com/?q=${encodeURIComponent(location)}` });
+        }
+      }
     }
 
-
+    // Parse highlights
+    const highlights: Array<{value: string, label: string}> = [];
+    const highlightsSection = content.match(/## HIGHLIGHTS\s*\n\n?([\s\S]*?)(?=\n---|\n##|$)/);
+    if (highlightsSection) {
+      const highlightLines = highlightsSection[1].split('\n').filter(line => line.trim().startsWith('- '));
+      highlightLines.forEach(line => {
+        const match = line.match(/- \*\*([^*]+)\*\*\s*(.+)/);
+        if (match) {
+          highlights.push({
+            value: match[1].trim(),
+            label: match[2].trim()
+          });
+        }
+      });
+    }
 
     // Parse skills
-    const skills = parseSkills(content);
+    const { allSkills: skills, categories: skillCategories } = parseSkills(content);
 
     // Create bio
     let bio = `${name} is an experienced ${title} with expertise in AI solution architecture, data engineering, and machine learning applications.`;
@@ -386,20 +556,27 @@ export function parseResumeMarkdown(): ParsedContent {
     const profile: Profile = {
       name,
       title,
+      headline,
       bio,
       skills: skills.slice(0, 15), // Get more skills for better display
+      skillCategories,
+      highlights,
       contacts
     };
 
-    // Parse experience, projects, and publications
+    // Parse experience, education, projects, courses, and publications
     const experience = parseWorkExperience(content);
+    const education = parseEducation(content);
     const projects = parseProjects(content);
+    const courses = parseCourses(content);
     const publications = parsePublications(content);
 
     const result = {
       profile,
       experience,
+      education,
       projects,
+      courses,
       publications
     };
 
@@ -421,11 +598,24 @@ export function parseResumeMarkdown(): ParsedContent {
       profile: {
         name: 'Vibhor Janey',
         title: 'AI Solution Architect',
+        headline: 'Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.',
         bio: 'Experienced AI Solution Architect specializing in manufacturing and healthcare AI applications.\n\nCurrently serving as Senior Manager of AI Solution Architect at Bristol Myers Squibb, leading development of AI copilot experiences for manufacturing operations.',
         skills: ['AI Architecture', 'Machine Learning', 'Data Engineering', 'Python', 'Next.js', 'React'],
+        skillCategories: [
+          { category: 'AI & ML', skills: ['Python', 'Machine Learning', 'Deep Learning', 'TensorFlow', 'PyTorch'] },
+          { category: 'Development', skills: ['React', 'Next.js', 'TypeScript', 'JavaScript'] },
+          { category: 'Cloud & Infrastructure', skills: ['AWS', 'Docker', 'Kubernetes', 'CI/CD'] }
+        ],
+        highlights: [
+          { value: '5,000+', label: 'Active Users' },
+          { value: '6+', label: 'Years Experience' },
+          { value: '40%', label: 'Efficiency Gain' },
+          { value: '98.59%', label: 'CV Accuracy' }
+        ],
         contacts: [
           { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
-          { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vibhorjaney/' }
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vibhorjaney/' },
+          { label: 'GitHub', url: 'https://github.com/Vibz28' }
         ]
       },
       experience: [
@@ -442,11 +632,32 @@ export function parseResumeMarkdown(): ParsedContent {
           ]
         }
       ],
+      education: [
+        {
+          institution: 'Tufts University',
+          degree: 'MS, Data Science',
+          timeframe: 'Sep 2021 – Dec 2022',
+          location: 'Medford, MA'
+        },
+        {
+          institution: 'Purdue University',
+          degree: 'B.Sc., Computer Graphics Technology',
+          timeframe: 'Aug 2015 – May 2019',
+          location: 'West Lafayette, IN'
+        }
+      ],
       projects: [
         {
           title: 'Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)',
           description: 'Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples.',
           link: 'https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi'
+        }
+      ],
+      courses: [
+        {
+          title: "Steve Hoberman's Live Online Data Modeling Master Class",
+          institution: 'Technics Publications',
+          date: 'Dec 2024'
         }
       ],
       publications: []
