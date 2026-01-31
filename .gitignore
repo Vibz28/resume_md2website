@@ -12,6 +12,8 @@ out/
 
 # TypeScript
 *.tsbuildinfo
+next-env.d.ts
+tsconfig.json
 
 # IDE/Editor files
 .vscode/
@@ -80,8 +82,8 @@ temp/
 # Local development
 .vercel
 
-# Keep docs/ folder (GitHub Pages deployment)
-!docs/
+# GitHub Pages build output (local export only)
+docs/
 
 # Spec-Kit files
 .specify/scripts/

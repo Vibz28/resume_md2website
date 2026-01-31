@@ -1,10 +1,16 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Github, Linkedin, Send, MessageSquare, ArrowUpRight, Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { Mail, MapPin, Phone, Github, Linkedin, Send, ArrowUpRight, Copy, Check } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import type { ComponentType } from 'react';
+import type { Profile } from '@/lib/models';
 
-export function ContactForm() {
+interface ContactFormProps {
+  profile: Profile;
+}
+
+export function ContactForm({ profile }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,63 +18,62 @@ export function ContactForm() {
     message: ''
   });
 
-  const contactInfo = [
-    {
-      icon: Mail,
-      label: "Email",
-      value: "vibhor.janey@gmail.com",
-      href: "mailto:vibhor.janey@gmail.com",
-      color: "text-primary"
-    },
-    {
-      icon: Phone,
-      label: "Phone",
-      value: "(765) 637-1295",
-      href: "tel:+17656371295",
-      color: "text-secondary"
-    },
-    {
-      icon: MapPin,
-      label: "Location",
-      value: "East Brunswick, NJ",
-      href: "https://maps.google.com/?q=East+Brunswick,NJ",
-      color: "text-accent"
+  const formatContactValue = (label: string, url: string) => {
+    const lower = label.toLowerCase();
+    if (lower === 'email') return url.replace('mailto:', '');
+    if (lower === 'phone') {
+      const digits = url.replace('tel:', '').replace(/\D/g, '');
+      return digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1)-$2-$3');
     }
-  ];
+    if (lower === 'location') {
+      return decodeURIComponent(url.replace('https://maps.google.com/?q=', '').replace(/\+/g, ' '));
+    }
+    return url.replace('https://', '');
+  };
 
-  const socialLinks = [
-    {
-      icon: Github,
-      label: "GitHub",
-      href: "https://github.com/Vibz28",
-      color: "hover:text-primary hover:border-primary"
-    },
-    {
-      icon: Linkedin,
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/vibhorjaney/",
-      color: "hover:text-secondary hover:border-secondary"
-    },
-    {
-      icon: MessageSquare,
-      label: "Email",
-      href: "mailto:vibhor.janey@gmail.com",
-      color: "hover:text-accent hover:border-accent"
-    }
-  ];
+  const contactInfo = useMemo(() => {
+    const colorMap: Record<string, string> = {
+      email: 'text-primary',
+      linkedin: 'text-secondary',
+      github: 'text-accent',
+      phone: 'text-secondary',
+      location: 'text-accent'
+    };
+    const iconMap: Record<string, ComponentType<{ className?: string }>> = {
+      email: Mail,
+      linkedin: Linkedin,
+      github: Github,
+      phone: Phone,
+      location: MapPin
+    };
+    const order = ['email', 'linkedin', 'github', 'phone', 'location'];
+    return profile.contacts
+      .filter(contact => order.includes(contact.label.toLowerCase()))
+      .sort((a, b) => order.indexOf(a.label.toLowerCase()) - order.indexOf(b.label.toLowerCase()))
+      .map(contact => {
+        const key = contact.label.toLowerCase();
+        const Icon = iconMap[key] || Mail;
+        return {
+          icon: Icon,
+          label: contact.label,
+          value: formatContactValue(contact.label, contact.url),
+          href: contact.url,
+          color: colorMap[key] || 'text-primary'
+        };
+      });
+  }, [profile.contacts]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const [copied, setCopied] = useState(false);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
-    const to = 'vibhor.janey@gmail.com';
+    const emailContact = profile.contacts.find(contact => contact.label.toLowerCase() === 'email');
+    const to = emailContact ? emailContact.url.replace('mailto:', '') : 'vibhor.janey@gmail.com';
     const subject = encodeURIComponent(formData.subject.trim() || `Message from ${formData.name}`);
     const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`);
     
@@ -80,8 +85,12 @@ export function ContactForm() {
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
+  const [copied, setCopied] = useState(false);
+
   const copyEmail = () => {
-    navigator.clipboard.writeText('vibhor.janey@gmail.com');
+    const emailContact = profile.contacts.find(contact => contact.label.toLowerCase() === 'email');
+    const email = emailContact ? emailContact.url.replace('mailto:', '') : 'vibhor.janey@gmail.com';
+    navigator.clipboard.writeText(email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -111,13 +120,13 @@ export function ContactForm() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-5 gap-12">
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch">
           {/* Left Column - Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-2 space-y-8"
+            className="space-y-8"
           >
             <div>
               <h3 className="text-2xl font-bold mb-4">Let's Connect</h3>
@@ -160,7 +169,9 @@ export function ContactForm() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Prefer to copy email?</p>
-                  <p className="font-mono text-sm">vibhor.janey@gmail.com</p>
+                  <p className="font-mono text-sm">
+                    {formatContactValue('email', profile.contacts.find(contact => contact.label.toLowerCase() === 'email')?.url || 'mailto:vibhor.janey@gmail.com')}
+                  </p>
                 </div>
                 <motion.button
                   onClick={copyEmail}
@@ -171,32 +182,6 @@ export function ContactForm() {
                   {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                   <span className="text-sm">{copied ? 'Copied!' : 'Copy'}</span>
                 </motion.button>
-              </div>
-            </div>
-
-            {/* Social Links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Follow Me</h4>
-              <div className="flex gap-3">
-                {socialLinks.map((social, index) => {
-                  const Icon = social.icon;
-                  return (
-                    <motion.a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      className={`w-12 h-12 rounded-xl bg-card border border-border/50 flex items-center justify-center transition-all ${social.color}`}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </motion.a>
-                  );
-                })}
               </div>
             </div>
 
@@ -222,10 +207,10 @@ export function ContactForm() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-3"
+            className="w-full h-full"
           >
-            <div className="p-8 rounded-2xl bg-card border border-border/50">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="p-8 rounded-2xl bg-card border border-border/50 h-full">
+              <form onSubmit={handleSubmit} className="h-full flex flex-col gap-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground font-mono">
@@ -271,7 +256,7 @@ export function ContactForm() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 flex-1 flex flex-col">
                   <label className="text-sm font-medium text-muted-foreground font-mono">
                     Message *
                   </label>
@@ -280,12 +265,12 @@ export function ContactForm() {
                     value={formData.message}
                     onChange={handleInputChange}
                     required
-                    rows={5}
-                    className="w-full px-4 py-3 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all resize-none"
+                    className="w-full flex-1 px-4 py-3 rounded-xl bg-muted border border-border/50 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all resize-none min-h-0"
                     placeholder="Tell me about your project, collaboration ideas, or any questions..."
                   />
                 </div>
 
+                <div className="mt-auto space-y-6">
                 <motion.button
                   type="submit"
                   whileHover={{ scale: 1.02 }}
@@ -299,6 +284,7 @@ export function ContactForm() {
                 <p className="text-center text-xs text-muted-foreground">
                   Opens your default email client (Gmail, Outlook, etc.) with pre-filled message
                 </p>
+                </div>
               </form>
             </div>
           </motion.div>

@@ -8,7 +8,7 @@ import { parseResumeMarkdown } from '@/lib/parseResumeMarkdown';
 
 export default function Home() {
   const resumeData = parseResumeMarkdown();
-  const { profile, experience, projects } = resumeData;
+  const { profile, experience, projects, education } = resumeData;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -16,7 +16,7 @@ export default function Home() {
       <HeroSimple profile={profile} resumeData={resumeData} />
 
       {/* About Section */}
-      <AboutSection profile={profile} />
+      <AboutSection profile={profile} education={education} />
 
       {/* Experience Section */}
       <ExperienceSection experience={experience} />
@@ -28,7 +28,7 @@ export default function Home() {
       <SkillsSection skillCategories={profile.skillCategories} />
 
       {/* Contact Section */}
-      <ContactForm />
+      <ContactForm profile={profile} />
     </div>
   );
 }

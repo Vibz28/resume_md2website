@@ -514,6 +514,12 @@ export function parseResumeMarkdown(): ParsedContent {
         contacts.push({ label: 'LinkedIn', url: linkedinMatch[0].match(/https:\/\/[^)]*/)?.[0] || '' });
       }
       
+      // GitHub
+      const githubMatch = contactLine.match(/\[([^\]]+)\]\(https:\/\/[^)]*github[^)]*\)/);
+      if (githubMatch) {
+        contacts.push({ label: 'GitHub', url: githubMatch[0].match(/https:\/\/[^)]*/)?.[0] || '' });
+      }
+      
       // Location - text after LinkedIn or at end of line
       const locationMatch = contactLine.match(/\|\s*([^|]+)$/);
       if (locationMatch) {
@@ -608,7 +614,8 @@ export function parseResumeMarkdown(): ParsedContent {
         ],
         contacts: [
           { label: 'Email', url: 'mailto:vibhor.janey@gmail.com' },
-          { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vibhorjaney/' }
+          { label: 'LinkedIn', url: 'https://www.linkedin.com/in/vibhorjaney/' },
+          { label: 'GitHub', url: 'https://github.com/Vibz28' }
         ]
       },
       experience: [

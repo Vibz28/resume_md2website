@@ -18,8 +18,8 @@ export function HeroSimple({ profile, resumeData }: HeroSimpleProps) {
     offset: ["start start", "end start"]
   });
   
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.15]);
 
   const scrollToAbout = () => {
     const element = document.querySelector('#about');

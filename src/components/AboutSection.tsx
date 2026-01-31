@@ -1,15 +1,16 @@
 "use client";
 
-import type { Profile } from '@/lib/models';
+import type { Profile, Education } from '@/lib/models';
 import { motion } from 'framer-motion';
-import { MapPin, Mail, Linkedin, GraduationCap, Briefcase } from 'lucide-react';
+import { MapPin, Mail, Linkedin, GraduationCap, Briefcase, Github } from 'lucide-react';
 
 interface AboutSectionProps {
   profile: Profile;
+  education?: Education[];
   isStandalone?: boolean;
 }
 
-export function AboutSection({ profile, isStandalone = false }: AboutSectionProps) {
+export function AboutSection({ profile, education = [], isStandalone = false }: AboutSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -26,6 +27,25 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
       transition: { duration: 0.6, ease: "easeOut" as const }
     }
   };
+
+  const getContactValue = (label: string) => {
+    const contact = profile.contacts.find(item => item.label.toLowerCase() === label.toLowerCase());
+    if (!contact) return '';
+    if (label.toLowerCase() === 'email') {
+      return contact.url.replace('mailto:', '');
+    }
+    if (label.toLowerCase() === 'phone') {
+      const digits = contact.url.replace('tel:', '').replace(/\D/g, '');
+      return digits.replace(/(\d{3})(\d{3})(\d{4})/, '($1)-$2-$3');
+    }
+    if (label.toLowerCase() === 'location') {
+      return decodeURIComponent(contact.url.replace('https://maps.google.com/?q=', '').replace(/\+/g, ' '));
+    }
+    return contact.url.replace('https://', '');
+  };
+
+  const primaryEducation = education[0];
+  const locationText = getContactValue('Location');
 
   return (
     <section id="about" className="py-24 bg-background relative overflow-hidden">
@@ -75,7 +95,7 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
                 >
                   <MapPin className="w-5 h-5 text-primary mb-2" />
                   <div className="font-mono text-xs text-muted-foreground">Location</div>
-                  <div className="font-medium">East Brunswick, NJ</div>
+                  <div className="font-medium">{locationText || 'Location available on request'}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
@@ -83,7 +103,7 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
                 >
                   <Briefcase className="w-5 h-5 text-secondary mb-2" />
                   <div className="font-mono text-xs text-muted-foreground">Current Role</div>
-                  <div className="font-medium">Senior AI Architect</div>
+                  <div className="font-medium">{profile.title}</div>
                 </motion.div>
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
@@ -91,7 +111,7 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
                 >
                   <GraduationCap className="w-5 h-5 text-accent mb-2" />
                   <div className="font-mono text-xs text-muted-foreground">Education</div>
-                  <div className="font-medium">MS Data Science</div>
+                  <div className="font-medium">{primaryEducation ? primaryEducation.degree : 'Education available on request'}</div>
                 </motion.div>
               </div>
             </motion.div>
@@ -105,8 +125,11 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
                   Connect
                 </h3>
                 <div className="space-y-3">
-                  {profile.contacts.map((contact, index) => {
-                    const Icon = contact.label.includes('Email') ? Mail : Linkedin;
+                  {profile.contacts
+                    .filter(contact => ['email', 'linkedin', 'github'].includes(contact.label.toLowerCase()))
+                    .map((contact, index) => {
+                    const lowerLabel = contact.label.toLowerCase();
+                    const Icon = lowerLabel === 'email' ? Mail : lowerLabel === 'linkedin' ? Linkedin : Github;
                     return (
                       <motion.a
                         key={index}
@@ -122,7 +145,7 @@ export function AboutSection({ profile, isStandalone = false }: AboutSectionProp
                         <div>
                           <div className="font-medium">{contact.label}</div>
                           <div className="text-sm text-muted-foreground font-mono">
-                            {contact.url.replace('mailto:', '').replace('https://', '')}
+                            {getContactValue(contact.label)}
                           </div>
                         </div>
                       </motion.a>

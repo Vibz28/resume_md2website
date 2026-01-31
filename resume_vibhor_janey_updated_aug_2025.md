@@ -1,7 +1,7 @@
 # Vibhor Janey
 **AI Solution Architect**
 
-[vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com) | (765)-637-1295 | [linkedin.com/in/vibhorjaney](https://www.linkedin.com/in/vibhorjaney/) | East Brunswick, NJ
+[vibhor.janey@gmail.com](mailto:vibhor.janey@gmail.com) | (765)-637-1295 | [linkedin.com/in/vibhorjaney](https://www.linkedin.com/in/vibhorjaney/) | [github.com/Vibz28](https://github.com/Vibz28) | East Brunswick, NJ
 
 **Headline:** Architecting Intelligent Systems — delivering production-scale ML systems and agentic orchestration for manufacturing and healthcare.
 
@@ -83,8 +83,8 @@ Aug 2015 – May 2019 | West Lafayette, IN
 ## PROJECTS
 
 **[Deviation Assistant](https://github.com/bms-corp/deviation-copilot)**  
-**Category:** Manufacturing AI  
-**Metrics:** 5,000+ users, Agentic orchestration, GxP compliance  
+**Category:** Manufacturing Quality AI  
+**Metrics:** 5000+ users, Agentic orchestration, GxP compliance  
 **Technologies:** LangGraph, LangChain, AWS Bedrock, Docker, MCP, Graph Workflows  
 - Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.
 
@@ -124,4 +124,3 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 **Steve Hoberman's Live Online Data Modeling Master Class** — Technics Publications  
 Dec 2024
-
