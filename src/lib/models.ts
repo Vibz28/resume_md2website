@@ -33,6 +33,9 @@ export interface Project {
   title: string;
   description: string;
   link?: string;
+  category?: string;
+  metrics?: string[];
+  technologies?: string[];
 }
 
 export interface Publication {

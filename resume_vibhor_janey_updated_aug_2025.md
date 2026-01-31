@@ -83,21 +83,39 @@ Aug 2015 – May 2019 | West Lafayette, IN
 ## PROJECTS
 
 **[Deviation Assistant](https://github.com/bms-corp/deviation-copilot)**  
+**Category:** Manufacturing AI  
+**Metrics:** 5,000+ users, Agentic orchestration, GxP compliance  
+**Technologies:** LangGraph, LangChain, AWS Bedrock, Docker, MCP, Graph Workflows  
 - Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.
 
 **[Batch Genealogy Data Product (BGDP)](https://github.com/bms-corp/gps-batch-genealogy)**  
+**Category:** Data Architecture  
+**Metrics:** 40%+ time reduction, 50% efficiency improvement, 7+ integrations  
+**Technologies:** SAP, Oracle EBS, Graph Databases, AWS, Python, SQL  
 - Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.
 
 **[Microplate Classification System](https://github.com/Vibz28)**  
+**Category:** Laboratory Automation  
+**Metrics:** 98.59% accuracy, Edge deployment, Lab automation  
+**Technologies:** TensorFlow, Computer Vision, OpenCV, Raspberry Pi, Edge TPU, Python  
 - Built a computer vision model to classify microplates for the FAST Liquid Handler at Formulatrix, achieving 98.59% accuracy using TensorFlow and Classification-by-Retrieval (CbR) methodology. Optimized for edge deployment on Raspberry Pi and Coral Edge TPU.
 
 **[Banking Branch Management System](https://github.com/Vibz28)**  
+**Category:** Development  
+**Metrics:** Product design, UX implementation, Full-stack  
+**Technologies:** React, Figma, Adobe XD, UX Design, Frontend  
 - Contributed to the inception and design of a new banking branch management product at Zebra Technologies, focusing on UX design in Figma/Adobe XD and front-end implementation with React.
 
 **[Anomaly Detection Engine](https://github.com/Vibz28)**  
+**Category:** Predictive Analytics  
+**Metrics:** Time series forecasting, Statistical analysis, Production deployment  
+**Technologies:** Python, FBProphet, Statistical Analysis, Time Series, Anomaly Detection  
 - Deployed an anomaly detection model combining boxplot methodology with FBProphet for time series forecasting and outlier identification in banking analytics.
 
 **[Cotton Pest Classification — Few-Shot Prototypical Networks (PyTorch)](https://1drv.ms/b/s!AuN5d6BNlVtfg6tVg6HA8sfAXcIulg?e=krITgi)**  
+**Category:** Agricultural AI  
+**Metrics:** Few-shot learning, Agricultural application, Published research  
+**Technologies:** PyTorch, Few-Shot Learning, Prototypical Networks, Computer Vision, Python  
 - Proposed and implemented a few-shot prototypical network to identify cotton crop pests with limited annotated samples; trained on data from Li et al., *Crop pest recognition in natural scenes using convolutional neural networks*.
 
 ---

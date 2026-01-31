@@ -228,7 +228,7 @@ export function generateResumePDF(options: PDFOptions = {}) {
       }
     }
 
-    // Projects Section
+    // Projects Section - Show only first 3 projects without categories/metrics/technologies
     if (projects.length > 0) {
       currentY += 15;
       if (currentY > 250) {
@@ -240,7 +240,10 @@ export function generateResumePDF(options: PDFOptions = {}) {
       doc.setTextColor(...primaryColor);
       doc.text('Projects', margin, currentY);
 
-      for (const project of projects) {
+      // Only show first 3 projects
+      const projectsToShow = projects.slice(0, 3);
+      
+      for (const project of projectsToShow) {
         currentY += 10;
         
         doc.setFontSize(11);

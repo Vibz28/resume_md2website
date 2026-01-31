@@ -255,14 +255,26 @@ function parseProjects(content: string): Project[] {
     const title = titleMatch[1].trim();
     const link = titleMatch[2].trim();
     
-    // Get description - lines starting with -
+    // Parse additional fields
     const lines = block.split('\n');
     let description = '';
+    let category = '';
+    let metrics: string[] = [];
+    let technologies: string[] = [];
     
     for (const line of lines) {
-      if (line.trim().startsWith('- ')) {
-        description = line.trim().substring(2).trim();
-        break;
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.startsWith('**Category:**')) {
+        category = trimmedLine.replace(/\*\*Category:\*\*/, '').trim();
+      } else if (trimmedLine.startsWith('**Metrics:**')) {
+        const metricsText = trimmedLine.replace(/\*\*Metrics:\*\*/, '').trim();
+        metrics = metricsText.split(',').map(m => m.trim()).filter(m => m.length > 0);
+      } else if (trimmedLine.startsWith('**Technologies:**')) {
+        const techText = trimmedLine.replace(/\*\*Technologies:\*\*/, '').trim();
+        technologies = techText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      } else if (trimmedLine.startsWith('- ')) {
+        description = trimmedLine.substring(2).trim();
       }
     }
     
@@ -270,7 +282,10 @@ function parseProjects(content: string): Project[] {
       projects.push({
         title,
         description,
-        link
+        link,
+        category,
+        metrics,
+        technologies
       });
     }
   }
