@@ -3,6 +3,11 @@ export interface SkillCategory {
   skills: string[];
 }
 
+export interface ProjectRecognition {
+  year: string;
+  items: string[];
+}
+
 export interface Profile {
   name: string;
   title: string;
@@ -36,6 +41,7 @@ export interface Project {
   category?: string;
   metrics?: string[];
   technologies?: string[];
+  recognition?: ProjectRecognition[];
 }
 
 export interface Publication {

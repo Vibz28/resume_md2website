@@ -25,15 +25,26 @@ const filterProjects = (source, maxCount = 3) => {
     const lines = block.split('\n').filter(line => line.trim());
     const keep = [];
     for (const line of lines) {
-      if (line.startsWith('**Category:**')) continue;
-      if (line.startsWith('**Metrics:**')) continue;
-      if (line.startsWith('**Technologies:**')) continue;
-      if (line.startsWith('- ')) {
-        keep.push(line);
+      const trimmedLine = line.trim();
+      if (trimmedLine.startsWith('**Category:**')) continue;
+      if (trimmedLine.startsWith('**Metrics:**')) continue;
+      if (trimmedLine.startsWith('**Technologies:**')) continue;
+      if (trimmedLine.startsWith('**Recognition:**')) {
+        keep.push(trimmedLine);
         continue;
       }
-      if (line.startsWith('**[')) {
-        keep.push(line);
+      if (trimmedLine.startsWith('- ')) {
+        keep.push(trimmedLine);
+        continue;
+      }
+      const linkedTitleMatch = trimmedLine.match(/^\*\*\[([^\]]+)\]\(([^)]+)\)\*\*$/);
+      const plainTitleMatch = trimmedLine.match(/^\*\*([^*\n]+)\*\*$/);
+      if (linkedTitleMatch) {
+        keep.push(`### [${linkedTitleMatch[1]}](${linkedTitleMatch[2]})`);
+        continue;
+      }
+      if (plainTitleMatch) {
+        keep.push(`### ${plainTitleMatch[1]}`);
       }
     }
     return keep.join('\n');
@@ -54,10 +65,14 @@ const sections = [
 
 const filteredMarkdown = sections.join('\n\n---\n\n');
 
-const result = await mdToPdf({
-  content: filteredMarkdown,
-  dest: outputPath
-});
+const result = await mdToPdf(
+  {
+    content: filteredMarkdown
+  },
+  {
+    dest: outputPath
+  }
+);
 
 if (result?.filename) {
   console.log(`PDF generated: ${result.filename}`);

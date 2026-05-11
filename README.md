@@ -80,7 +80,7 @@ Models are defined in `src/lib/models.ts` and include the following major sectio
 
 - Profile: name, title, headline, bio, skills, skill categories, highlights, contacts
 - Experience: employer, title, timeframe, location, summary, achievements
-- Projects: title, description, link, category, metrics, technologies
+- Projects: title, description, optional link, category, metrics, technologies, recognition groups
 - Education, Courses, Publications
 
 ## Resume Markdown Structure Requirements
@@ -147,7 +147,7 @@ Date Range | Location
 
 ### Projects
 
-Each project must include a markdown link in the title to be parsed.
+Each project may use either a markdown link in the title or a plain bold title. Recognition groups are optional and are rendered on the website and in PDF output.
 
 ```markdown
 ## PROJECTS
@@ -157,6 +157,9 @@ Each project must include a markdown link in the title to be parsed.
 **Metrics:** Metric 1, Metric 2
 **Technologies:** Tech 1, Tech 2, Tech 3
 - One-line description of the project
+**Recognition:**
+- **2026:** Recognition 1; Recognition 2
+- **2025:** Recognition 3
 ```
 
 ### Courses
@@ -182,7 +185,8 @@ Month Year
 - Position titles must use `_**Title**_`
 - Date and location must be in `*Date | Location*` format
 - Summaries use `**Summary:**` and are optional (fallback uses the first bullet)
-- Project titles must be markdown links to be detected
+- Project titles may be markdown links or plain bold titles
+- Project recognition groups must use `**Recognition:**` followed by `- **YEAR:** item; item` lines
 - Skills must use `**Category:**` format
 
 ## Development Setup

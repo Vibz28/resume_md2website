@@ -148,3 +148,6 @@ config.local.*
 # Deployment artifacts (will be generated during CI/CD)
 deployment/
 deploy/
+
+# Locally generated resume artifacts
+resume_vibhor_janey_updated_aug_2025.pdf

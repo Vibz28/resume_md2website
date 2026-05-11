@@ -253,6 +253,21 @@ export function generateResumePDF(options: PDFOptions = {}) {
         currentY += 6;
         doc.setFontSize(9);
         currentY = addWrappedText(project.description, margin, currentY, contentWidth, 4);
+
+        if (project.recognition && project.recognition.length > 0) {
+          currentY += 5;
+          doc.setFontSize(9);
+          doc.setTextColor(...primaryColor);
+          doc.text('Recognition', margin, currentY);
+
+          for (const group of project.recognition) {
+            currentY += 5;
+            doc.setFontSize(8.5);
+            doc.setTextColor(...textColor);
+            const recognitionLine = `${group.year}: ${group.items.join(' • ')}`;
+            currentY = addWrappedText(recognitionLine, margin + 4, currentY, contentWidth - 4, 4);
+          }
+        }
       }
     }
 
@@ -424,12 +439,62 @@ function getFallbackResumeData(): ParsedContent {
       {
         title: 'Deviation Assistant',
         description: 'Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.',
-        link: 'https://github.com/bms-corp/deviation-copilot'
+        recognition: [
+          {
+            year: '2026',
+            items: [
+              'BMS Bravo Integrity — Best practices in AI for critical projects',
+              'BMS Bravo Innovation — Development in the Age of AI Workshop Leaders'
+            ]
+          },
+          {
+            year: '2025',
+            items: [
+              'BMS Bravo Innovation — Deviation Assistant a Pivot to User Adoption',
+              'BMS Bravo Innovation — Championing AI in SDLC for GPS BI&T',
+              'BMS Bravo Accountability — Exceptional Support in the Interview Process',
+              'BMS Bravo Passion — Agile Process Innovators (Deviation AI Copilot)'
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Product Disposition Tool',
+        description: 'Co-led architecture and delivery for a user-focused product disposition experience that simplifies a complex cross-functional workflow, reduces manual effort, and enables faster, more confident disposition decisions in a regulated manufacturing context.',
+        recognition: [
+          {
+            year: '2026',
+            items: [
+              'BMS Bravo Innovation — Product Disposition Tool Success'
+            ]
+          }
+        ]
       },
       {
         title: 'Batch Genealogy Data Product (BGDP)',
         description: 'Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.',
-        link: 'https://github.com/bms-corp/gps-batch-genealogy'
+        recognition: [
+          {
+            year: '2026',
+            items: [
+              'BMS Bravo Accountability — Batch Genealogy Release 4'
+            ]
+          },
+          {
+            year: '2024',
+            items: [
+              'BMS Bravo Accountability — Recognition for Batch Genealogy Release 2',
+              'BMS Bravo Passion — Batch Genealogy Data Product - Release 1',
+              'BMS Bravo Innovation — Innovating at the 2024 HackFest'
+            ]
+          },
+          {
+            year: '2023',
+            items: [
+              'BMS Bravo Urgency — Batch Genealogy - Knowledge graph'
+            ]
+          }
+        ]
       },
       {
         title: 'Microplate Classification System',

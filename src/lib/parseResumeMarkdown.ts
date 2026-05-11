@@ -248,12 +248,13 @@ function parseProjects(content: string): Project[] {
   const projectBlocks = projectText.split(/\n\n+/).filter(block => block.trim());
   
   for (const block of projectBlocks) {
-    // Match **[Title](Link)** pattern
-    const titleMatch = block.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/);
-    if (!titleMatch) continue;
-    
-    const title = titleMatch[1].trim();
-    const link = titleMatch[2].trim();
+    // Match either **[Title](Link)** or **Title**
+    const linkedTitleMatch = block.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/);
+    const plainTitleMatch = block.match(/^\*\*([^*\n]+)\*\*$/m);
+    if (!linkedTitleMatch && !plainTitleMatch) continue;
+
+    const title = linkedTitleMatch?.[1]?.trim() || plainTitleMatch?.[1]?.trim() || '';
+    const link = linkedTitleMatch?.[2]?.trim();
     
     // Parse additional fields
     const lines = block.split('\n');
@@ -261,20 +262,41 @@ function parseProjects(content: string): Project[] {
     let category = '';
     let metrics: string[] = [];
     let technologies: string[] = [];
+    const recognition: Array<{ year: string; items: string[] }> = [];
+    let inRecognition = false;
     
     for (const line of lines) {
       const trimmedLine = line.trim();
       
       if (trimmedLine.startsWith('**Category:**')) {
+        inRecognition = false;
         category = trimmedLine.replace(/\*\*Category:\*\*/, '').trim();
       } else if (trimmedLine.startsWith('**Metrics:**')) {
+        inRecognition = false;
         const metricsText = trimmedLine.replace(/\*\*Metrics:\*\*/, '').trim();
         metrics = metricsText.split(',').map(m => m.trim()).filter(m => m.length > 0);
       } else if (trimmedLine.startsWith('**Technologies:**')) {
+        inRecognition = false;
         const techText = trimmedLine.replace(/\*\*Technologies:\*\*/, '').trim();
         technologies = techText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      } else if (trimmedLine.startsWith('**Recognition:**')) {
+        inRecognition = true;
       } else if (trimmedLine.startsWith('- ')) {
-        description = trimmedLine.substring(2).trim();
+        if (inRecognition) {
+          const recognitionMatch = trimmedLine.match(/^- \*\*([^*]+):\*\*\s*(.+)$/);
+          if (recognitionMatch) {
+            const year = recognitionMatch[1].trim();
+            const items = recognitionMatch[2]
+              .split(/\s*;\s*/)
+              .map(item => item.trim())
+              .filter(item => item.length > 0);
+            if (year && items.length > 0) {
+              recognition.push({ year, items });
+            }
+          }
+        } else {
+          description = trimmedLine.substring(2).trim();
+        }
       }
     }
     
@@ -285,7 +307,8 @@ function parseProjects(content: string): Project[] {
         link,
         category,
         metrics,
-        technologies
+        technologies,
+        recognition
       });
     }
   }

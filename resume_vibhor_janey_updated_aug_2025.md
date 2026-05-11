@@ -82,17 +82,32 @@ Aug 2015 – May 2019 | West Lafayette, IN
 
 ## PROJECTS
 
-**[Deviation Assistant](https://github.com/bms-corp/deviation-copilot)**  
+**Deviation Assistant**  
 **Category:** Manufacturing Quality AI  
 **Metrics:** 5000+ users, Agentic orchestration, GxP compliance  
 **Technologies:** LangGraph, LangChain, AWS Bedrock, Docker, MCP, Graph Workflows  
 - Leading the architecture and development of an agentic AI solution targeting 5,000+ manufacturing and quality users at Bristol Myers Squibb. Features an autonomous tool-calling agent orchestration built in LangGraph/LangChain and deployed on AWS ECS.
+**Recognition:**
+- **2026:** BMS Bravo Integrity — Best practices in AI for critical projects; BMS Bravo Innovation — Development in the Age of AI Workshop Leaders
+- **2025:** BMS Bravo Innovation — Deviation Assistant a Pivot to User Adoption; BMS Bravo Innovation — Championing AI in SDLC for GPS BI&T; BMS Bravo Accountability — Exceptional Support in the Interview Process; BMS Bravo Passion — Agile Process Innovators (Deviation AI Copilot)
 
-**[Batch Genealogy Data Product (BGDP)](https://github.com/bms-corp/gps-batch-genealogy)**  
+**Product Disposition Tool**  
+**Category:** Manufacturing Quality AI  
+**Metrics:** Streamlined workflow, Reduced manual effort, Faster disposition decisions  
+**Technologies:** AI Decision Support, Workflow Architecture, Quality Systems, Human-in-the-Loop  
+- Co-led architecture and delivery for a user-focused product disposition experience that simplifies a highly complex cross-functional workflow, reduces manual effort, and enables faster, more confident disposition decisions in a regulated manufacturing context.
+**Recognition:**
+- **2026:** BMS Bravo Innovation — Product Disposition Tool Success
+
+**Batch Genealogy Data Product (BGDP)**  
 **Category:** Data Architecture  
 **Metrics:** 40%+ time reduction, 50% efficiency improvement, 7+ integrations  
 **Technologies:** SAP, Oracle EBS, Graph Databases, AWS, Python, SQL  
 - Architected a unified batch genealogy system integrating SAP, Oracle EBS, and CMO sources. Reduced data processing time by 40%+ and improved release decision efficiency by 50% through graph-based data modeling.
+**Recognition:**
+- **2026:** BMS Bravo Accountability — Batch Genealogy Release 4
+- **2024:** BMS Bravo Accountability — Recognition for Batch Genealogy Release 2; BMS Bravo Passion — Batch Genealogy Data Product - Release 1; BMS Bravo Innovation — Innovating at the 2024 HackFest
+- **2023:** BMS Bravo Urgency — Batch Genealogy - Knowledge graph
 
 **[Microplate Classification System](https://github.com/Vibz28)**  
 **Category:** Laboratory Automation  
