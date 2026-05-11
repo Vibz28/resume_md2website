@@ -35,6 +35,35 @@ const getProjectImage = (title: string): string => {
   return key ? imageMapping[key] : defaultImage;
 };
 
+const selectedRecognitionByProject: Record<string, string[]> = {
+  'Deviation Assistant': [
+    'AI best-practices leadership',
+    'user-adoption turnaround',
+    'AI-in-SDLC leadership'
+  ],
+  'Product Disposition Tool': [
+    'product disposition delivery success'
+  ],
+  'Batch Genealogy Data Product (BGDP)': [
+    'knowledge-graph architecture',
+    'release milestone delivery',
+    '2024 HackFest innovation'
+  ]
+};
+
+const getRecognitionSummary = (project: Project): string => {
+  const selected = selectedRecognitionByProject[project.title];
+  if (selected && selected.length > 0) {
+    return selected.join('; ');
+  }
+
+  const flattenedItems = (project.recognition || []).flatMap(group =>
+    group.items.map(item => item.replace(/^BMS Bravo\s+/i, '').trim())
+  );
+
+  return flattenedItems.join('; ');
+};
+
 // Get category icon
 const getCategoryIcon = (category?: string) => {
   if (!category) return Sparkles;
@@ -123,6 +152,7 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
               const status = getStatus(project.category);
               const image = getProjectImage(project.title);
               const CategoryIcon = getCategoryIcon(project.category);
+              const recognitionSummary = getRecognitionSummary(project);
               
               return (
                 <motion.div
@@ -171,31 +201,11 @@ export function ProjectsSection({ projects: markdownProjects }: ProjectsSectionP
                         </p>
                       </div>
 
-                      {project.recognition && project.recognition.length > 0 && (
-                        <div className="space-y-2">
-                          <div className="text-[11px] font-mono uppercase tracking-[0.18em] text-primary/80">
-                            Recognition
-                          </div>
-                          <div className="space-y-2">
-                            {project.recognition.map((group) => (
-                              <div
-                                key={`${project.title}-${group.year}`}
-                                className="rounded-xl border border-border/40 bg-muted/35 px-3 py-2"
-                              >
-                                <div className="mb-1 text-[11px] font-mono text-primary">
-                                  {group.year}
-                                </div>
-                                <div className="space-y-1">
-                                  {group.items.map((item) => (
-                                    <p key={item} className="text-xs leading-relaxed text-muted-foreground">
-                                      {item}
-                                    </p>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                      {recognitionSummary && (
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          <span className="font-medium text-foreground">Selected recognition:</span>{' '}
+                          {recognitionSummary}
+                        </p>
                       )}
 
                       {/* Metrics */}

@@ -8,6 +8,58 @@ export interface PDFOptions {
   resumeData?: ParsedContent;
 }
 
+const selectedRecognitionByProject: Record<string, string[]> = {
+  'Deviation Assistant': [
+    'AI best-practices leadership',
+    'user-adoption turnaround',
+    'AI-in-SDLC leadership'
+  ],
+  'Product Disposition Tool': [
+    'delivery success'
+  ],
+  'Batch Genealogy Data Product (BGDP)': [
+    'knowledge-graph architecture',
+    'release milestone delivery',
+    '2024 HackFest innovation'
+  ]
+};
+
+function getRecognitionSummary(project: Project): string {
+  const selected = selectedRecognitionByProject[project.title];
+  if (selected && selected.length > 0) {
+    return selected.join(', ');
+  }
+
+  const flattenedItems = (project.recognition || []).flatMap(group =>
+    group.items.map(item => item.replace(/^BMS Bravo\s+/i, '').trim())
+  );
+
+  return flattenedItems.join(', ');
+}
+
+function getBmsRecognitionBullet(projects: Project[]): string {
+  const projectNames: Record<string, string> = {
+    'Deviation Assistant': 'Deviation Assistant',
+    'Product Disposition Tool': 'Product Disposition Tool',
+    'Batch Genealogy Data Product (BGDP)': 'BGDP'
+  };
+
+  const summaries = projects
+    .slice(0, 3)
+    .map(project => {
+      const summary = getRecognitionSummary(project);
+      if (!summary) return '';
+      return `${projectNames[project.title] || project.title} (${summary})`;
+    })
+    .filter(Boolean);
+
+  if (summaries.length === 0) {
+    return '';
+  }
+
+  return `Selected recognition: ${summaries.join('; ')}.`;
+}
+
 function formatContactsForPDF(profile: Profile): { text: string; url?: string }[] {
   const contacts: { text: string; url?: string }[] = [];
   
@@ -136,6 +188,9 @@ export function generateResumePDF(options: PDFOptions = {}) {
     doc.setTextColor(...primaryColor);
     doc.text('Professional Experience', margin, currentY);
 
+    let hasInsertedBmsRecognition = false;
+    const bmsRecognitionBullet = getBmsRecognitionBullet(projects);
+
     for (const exp of experience) {
       currentY += 10;
       
@@ -165,6 +220,19 @@ export function generateResumePDF(options: PDFOptions = {}) {
             currentY = 20;
           }
         }
+      }
+
+      if (!hasInsertedBmsRecognition && bmsRecognitionBullet && exp.employer.toLowerCase().includes('bristol myers squibb')) {
+        currentY += 6;
+        doc.setTextColor(...textColor);
+        currentY = addWrappedText(`• ${bmsRecognitionBullet}`, margin + 5, currentY, contentWidth - 10, 5);
+
+        if (currentY > 270) {
+          doc.addPage();
+          currentY = 20;
+        }
+
+        hasInsertedBmsRecognition = true;
       }
     }
 
@@ -254,20 +322,6 @@ export function generateResumePDF(options: PDFOptions = {}) {
         doc.setFontSize(9);
         currentY = addWrappedText(project.description, margin, currentY, contentWidth, 4);
 
-        if (project.recognition && project.recognition.length > 0) {
-          currentY += 5;
-          doc.setFontSize(9);
-          doc.setTextColor(...primaryColor);
-          doc.text('Recognition', margin, currentY);
-
-          for (const group of project.recognition) {
-            currentY += 5;
-            doc.setFontSize(8.5);
-            doc.setTextColor(...textColor);
-            const recognitionLine = `${group.year}: ${group.items.join(' • ')}`;
-            currentY = addWrappedText(recognitionLine, margin + 4, currentY, contentWidth - 4, 4);
-          }
-        }
       }
     }
 

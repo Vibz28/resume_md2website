@@ -13,6 +13,26 @@ const extractSection = (source, heading) => {
   return match ? match[0].trim() : '';
 };
 
+const bmsRecognitionLine = '- Selected recognition: Deviation Assistant (AI best-practices leadership, user-adoption turnaround, AI-in-SDLC leadership); Product Disposition Tool (delivery success); BGDP (knowledge-graph architecture, release milestone delivery, 2024 HackFest innovation).';
+
+const transformWorkExperience = (source) => {
+  const workExperienceSection = extractSection(source, 'WORK EXPERIENCE');
+  if (!workExperienceSection) return '';
+
+  if (workExperienceSection.includes('Selected recognition:')) {
+    return workExperienceSection;
+  }
+
+  if (workExperienceSection.includes('\n\n_**Manager, Data Architecture, Global Product Development and Supply**_')) {
+    return workExperienceSection.replace(
+      '\n\n_**Manager, Data Architecture, Global Product Development and Supply**_',
+      `\n${bmsRecognitionLine}\n\n_**Manager, Data Architecture, Global Product Development and Supply**_`
+    );
+  }
+
+  return `${workExperienceSection}\n\n${bmsRecognitionLine}`;
+};
+
 const filterProjects = (source, maxCount = 3) => {
   const projectsSection = extractSection(source, 'PROJECTS');
   if (!projectsSection) return '';
@@ -29,11 +49,12 @@ const filterProjects = (source, maxCount = 3) => {
       if (trimmedLine.startsWith('**Category:**')) continue;
       if (trimmedLine.startsWith('**Metrics:**')) continue;
       if (trimmedLine.startsWith('**Technologies:**')) continue;
-      if (trimmedLine.startsWith('**Recognition:**')) {
-        keep.push(trimmedLine);
-        continue;
-      }
+      if (trimmedLine.startsWith('**Recognition:**')) continue;
       if (trimmedLine.startsWith('- ')) {
+        const recognitionMatch = trimmedLine.match(/^- \*\*([^*]+):\*\*\s*(.+)$/);
+        if (recognitionMatch) {
+          continue;
+        }
         keep.push(trimmedLine);
         continue;
       }
@@ -56,7 +77,7 @@ const filterProjects = (source, maxCount = 3) => {
 const sections = [
   markdown.split('\n---\n')[0].trim(),
   extractSection(markdown, 'HIGHLIGHTS'),
-  extractSection(markdown, 'WORK EXPERIENCE'),
+  transformWorkExperience(markdown),
   extractSection(markdown, 'EDUCATION'),
   extractSection(markdown, 'SKILLS'),
   filterProjects(markdown, 3),

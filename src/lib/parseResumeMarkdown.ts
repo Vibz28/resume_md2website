@@ -248,16 +248,18 @@ function parseProjects(content: string): Project[] {
   const projectBlocks = projectText.split(/\n\n+/).filter(block => block.trim());
   
   for (const block of projectBlocks) {
-    // Match either **[Title](Link)** or **Title**
-    const linkedTitleMatch = block.match(/\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/);
-    const plainTitleMatch = block.match(/^\*\*([^*\n]+)\*\*$/m);
-    if (!linkedTitleMatch && !plainTitleMatch) continue;
-
-    const title = linkedTitleMatch?.[1]?.trim() || plainTitleMatch?.[1]?.trim() || '';
-    const link = linkedTitleMatch?.[2]?.trim();
-    
     // Parse additional fields
     const lines = block.split('\n');
+    const firstContentLine = lines.map(line => line.trim()).find(line => line.length > 0) || '';
+    const linkedTitleMatch = firstContentLine.match(/^\*\*\[([^\]]+)\]\(([^)]+)\)\*\*\s*$/);
+    const plainTitleMatch = firstContentLine.match(/^\*\*([^*\n]+)\*\*\s*$/);
+    const title = linkedTitleMatch?.[1]?.trim() || plainTitleMatch?.[1]?.trim() || '';
+    const link = linkedTitleMatch?.[2]?.trim();
+
+    if (!title || ['Category:', 'Metrics:', 'Technologies:', 'Recognition:'].includes(title)) {
+      continue;
+    }
+
     let description = '';
     let category = '';
     let metrics: string[] = [];
